@@ -6,6 +6,7 @@ import { AppLayout } from './layouts/app-layout';
 import { LoginView } from './features/auth/login-view';
 import { DashboardView } from './features/dashboard/dashboard-view';
 import { PatientList } from './features/patients';
+import { AppointmentsCalendar } from './features/appointments';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +43,7 @@ export const App: React.FC = () => {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardView />} />
             <Route path="patients" element={<PatientList />} />
+            <Route path="appointments" element={<AppointmentsCalendar />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

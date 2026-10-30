@@ -53,18 +53,18 @@ Establecer la infraestructura base en Docker, el esquema de persistencia relacio
 ---
 
 ### Sprint 3: Agenda Multirrecinto, Colisión de Sillones y Notificaciones
-- [ ] **3.1 Backend de Agenda y Citas:**
-  - [ ] Endpoints `/api/v1/appointments` para agendamiento, reprogramación y cambio de estados (`Programado`, `Confirmado`, `En Sala`, `En Atención`, `Atendido`, `Cancelado`, `No-Show`).
-  - [ ] **Restricción estricta de colisión física:** Bloqueo en base de datos (`EXCLUDE USING gist`) y validación en servicio que impide agendar 2 citas simultáneas en el mismo sillón dental.
-  - [ ] Cálculo de tiempo de espera en sala en tiempo real.
-- [ ] **3.2 Frontend de Calendario Clínico:**
-  - [ ] Calendario interactivo con vistas día/semana/sillón (`AppointmentsCalendar.tsx`, `.module.css`, `useAppointmentsCalendar.ts`).
-  - [ ] Asignación visual por colores según estado del turno y odontólogo tratante.
-  - [ ] Modal de agendamiento rápido con detección preventiva de choques de horario.
-- [ ] **3.3 Notificaciones Transaccionales (Worker asíncrono BullMQ):**
-  - [ ] Integración con Meta Cloud WhatsApp Business API para confirmación inmediata de reserva.
-  - [ ] Jobs programados en Redis para recordatorios automáticos 48h y 24h antes de la cita.
-  - [ ] Webhook para recibir confirmaciones interactivas del paciente (`Confirmar` / `Cancelar`).
+- [x] **3.1 Backend de Agenda y Citas:**
+  - [x] Endpoints `/api/v1/appointments` para agendamiento, reprogramación y cambio de estados (`Programado`, `Confirmado`, `En Sala`, `En Atención`, `Atendido`, `Cancelado`, `No-Show`).
+  - [x] **Restricción estricta de colisión física:** Bloqueo en base de datos (`EXCLUDE USING gist`) y validación en servicio que impide agendar 2 citas simultáneas en el mismo sillón dental.
+  - [x] Cálculo de tiempo de espera en sala en tiempo real.
+- [x] **3.2 Frontend de Calendario Clínico:**
+  - [x] Calendario interactivo con vistas día/semana/sillón (`AppointmentsCalendar.tsx`, `.module.css`, `useAppointmentsCalendar.ts`).
+  - [x] Asignación visual por colores según estado del turno y odontólogo tratante.
+  - [x] Modal de agendamiento rápido con detección preventiva de choques de horario.
+- [x] **3.3 Notificaciones Transaccionales (Worker asíncrono BullMQ):**
+  - [x] Integración con Meta Cloud WhatsApp Business API para confirmación inmediata de reserva.
+  - [x] Jobs programados en Redis para recordatorios automáticos 48h y 24h antes de la cita.
+  - [x] Webhook para recibir confirmaciones interactivas del paciente (`Confirmar` / `Cancelar`).
 
 ---
 
