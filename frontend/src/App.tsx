@@ -17,6 +17,7 @@ import {
 } from './features/clinical-records';
 import { InventoryView } from './features/inventory';
 import { TreatmentPlansCommissionsView } from './features/treatment-plans-commissions';
+import { AnalyticsAuditView } from './features/analytics-audit';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +65,8 @@ export const App: React.FC = () => {
             <Route path="inventory" element={<InventoryView />} />
             <Route path="treatment-plans" element={<TreatmentPlansCommissionsView initialTab="plans" />} />
             <Route path="commissions" element={<TreatmentPlansCommissionsView initialTab="settlements" />} />
+            <Route path="analytics" element={<AnalyticsAuditView initialTab="dashboard" />} />
+            <Route path="audit" element={<AnalyticsAuditView initialTab="audit" />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

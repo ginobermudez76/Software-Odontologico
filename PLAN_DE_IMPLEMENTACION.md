@@ -31,8 +31,8 @@
 ```mermaid
 flowchart LR
     M1["Hito 1: Core Operativo\n(Fin Sprint 4)\nAgenda, Pacientes y Caja\n[COMPLETADO]"]
-    M2["Hito 2: Core Clínico\n(Fin Sprint 8)\nOdontograma y SOEP"]
-    M3["Hito 3: Finanzas & Stock\n(Fin Sprint 11)\nDescargo y Comisiones"]
+    M2["Hito 2: Core Clínico\n(Fin Sprint 8)\nOdontograma y SOEP\n[COMPLETADO]"]
+    M3["Hito 3: Finanzas & Stock\n(Fin Sprint 11)\nDescargo y Comisiones\n[COMPLETADO]"]
     M4["Hito 4: Go-Live\n(Fin Sprint 12)\nProducción Certificada"]
 
     M1 --> M2
@@ -59,7 +59,7 @@ flowchart LR
 - [x] Control de insumos por número de lote y fecha de caducidad con alertas preventivas FEFO (Sprint 9).
 - [x] Motor de liquidación de comisiones con deducción previa de costos de laboratorio externo (Sprint 10 - Regla RN-07).
 - [x] Presupuestos multinivel por fases clínicas con validez de 30 días y conversión a citas (Sprint 10 - Regla RN-04).
-- [ ] Tablero de mando directivo con indicadores clínicos y financieros en tiempo real (Sprint 11).
+- [x] Tablero de mando directivo con indicadores clínicos y financieros en tiempo real (Sprint 11).
 
 ### Hito 4: Certificación de Seguridad y Puesta en Producción
 - [ ] Pruebas de aceptación UAT aprobadas por el personal médico y administrativo.

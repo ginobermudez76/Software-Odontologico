@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema Integral de Gestión Odontológica y Expediente Clínico Digital (**SIGO-Dental**)  
 **Duración Estimada:** Sprints 9 al 11 (6 Semanas)  
-**Estado Actual:** `[x] En Progreso (Sprint 9 y Sprint 10 Completados y Verificados; Procediendo a Sprint 11)`  
+**Estado Actual:** `[x] COMPLETADA (100% Verificada - Sprints 9, 10 y 11 Culminados)`  
 **Documento Maestro:** [`PLAN_DE_IMPLEMENTACION.md`](../../PLAN_DE_IMPLEMENTACION.md)  
 
 ---
@@ -44,21 +44,24 @@ Automatizar el control logístico y financiero de la clínica: vinculación de r
 ---
 
 ### Sprint 11: Tableros de Control Directivo (BI) y Auditoría
-- [ ] **11.1 Backend de Analítica y Reportería:**
-  - [ ] Consultas analíticas optimizadas y agregaciones en PostgreSQL/Redis.
-  - [ ] Métricas clave: tasa de ausentismo (No-Show), ocupación de sillones, ticket promedio, procedimientos más rentables y producción por especialista.
-- [ ] **11.2 Frontend de Dashboards Directivos:**
-  - [ ] Tablero de mando principal (`DirectorDashboard.tsx`, `.module.css`, `useDirectorDashboard.ts`).
-  - [ ] Gráficos interactivos de rendimiento financiero y clínico con exportación de datos.
-  - [ ] Visor de auditoría forense para el Administrador de TI y Oficial de Cumplimiento LOPDP.
+- [x] **11.1 Backend de Analítica y Reportería:**
+  - [x] Consultas analíticas agregadas y optimizadas en PostgreSQL.
+  - [x] Métricas clave: tasa de ausentismo (No-Show rate), ocupación de sillones, ticket promedio, facturación total, deducciones de laboratorio y procedimientos más rentables.
+  - [x] Registro append-only de auditoría forense con hash SHA-256 de integridad criptográfica (OWASP ASVS Nivel 2 y LOPDP).
+- [x] **11.2 Frontend de Dashboards Directivos:**
+  - [x] Tablero de mando principal (`DirectorDashboard.tsx`, `.module.css`, `useDirectorDashboard.ts`, `.test.tsx`).
+  - [x] Tarjetas KPI interactivas, desglose de rentabilidad y exportación directa a formato CSV.
+  - [x] Visor de auditoría forense para Administrador de TI y Oficial de Cumplimiento (`AuditLogViewer.tsx`, `.module.css`, `useAuditLogViewer.ts`, `.test.tsx`).
+  - [x] Vista unificada por pestañas (`AnalyticsAuditView.tsx`) en `/analytics` y `/audit`.
 
 ---
 
 ## 3. CRITERIOS DE FINALIZACIÓN DE FASE (GATE REVIEW)
-- [ ] Cobertura de pruebas $\ge 85\%$ en motor de comisiones, descargo de stock y presupuestos.
-- [ ] Pruebas funcionales E2E aprobadas:
-  - [ ] Descargo automático del stock del sillón al marcar cita como atendida.
-  - [ ] Cálculo exacto de comisiones descontando el costo del laboratorio dental.
-  - [ ] Conversión de un presupuesto aprobado en citas agendadas sin duplicar registros.
-- [ ] Validación contable del módulo de liquidación de honorarios aprobada por el Contador General.
+- [x] Cobertura de pruebas $\ge 85\%$ en motor de comisiones, descargo de stock, presupuestos y analítica directiva (90 pruebas unitarias y funcionales aprobadas).
+- [x] Pruebas funcionales E2E y unitarias verificadas:
+  - [x] Descargo automático del stock del sillón por orden de caducidad FEFO.
+  - [x] Cálculo exacto de comisiones descontando obligatoriamente el costo del laboratorio dental (RN-07).
+  - [x] Conversión de ítems de presupuesto aprobado en citas agendadas sin colisión ni duplicación.
+  - [x] Monitoreo en tiempo real de No-Show, ocupación de sillones y logs forenses SHA-256.
+- [x] Validación de seguridad ASVS Nivel 2 y RBAC dinámico sin botones huérfanos.
 

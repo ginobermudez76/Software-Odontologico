@@ -11,6 +11,7 @@ import { BillingModule } from './modules/billing/billing.module';
 import { ClinicalRecordsModule } from './modules/clinical-records/clinical-records.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { TreatmentPlansCommissionsModule } from './modules/treatment-plans-commissions/treatment-plans-commissions.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TreatmentPlansCommissionsModule } from './modules/treatment-plans-commi
     ClinicalRecordsModule,
     InventoryModule,
     TreatmentPlansCommissionsModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule {}
