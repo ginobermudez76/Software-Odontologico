@@ -8,6 +8,7 @@
 * [`docs/ESPECIFICACION_PANTALLAS_UI_UX.md`](./docs/ESPECIFICACION_PANTALLAS_UI_UX.md) (Wireframes y Pantallas UI/UX)
 * [`docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md`](./docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md) (Estándares de Seguridad OWASP y ASVS Nivel 2)
 * [`docs/MODELO_DATOS_RBAC_DINAMICO_Y_ERRORES.md`](./docs/MODELO_DATOS_RBAC_DINAMICO_Y_ERRORES.md) (RBAC Dinámico, Partial Indexes y Errores RFC 7807)
+* [`docs/DIAGRAMA_BASE_DE_DATOS_ERD.md`](./docs/DIAGRAMA_BASE_DE_DATOS_ERD.md) (Diagrama Integral de Base de Datos y Relaciones ERD)
 
 ---
 
@@ -24,6 +25,7 @@
    * Las opciones del menú Sidebar **nunca se hardcodean** en el frontend.
    * La navegación se alimenta dinámicamente desde base de datos vinculando roles con opciones (`rol_opcion`) y opciones con rutas de endpoints (`opcion_endpoint`).
    * Los guards de backend validan dinámicamente si el rol del usuario posee permiso sobre el endpoint invocado.
+   * **Permisos Booleanos y Visibilidad de Botones de Acción:** Las tablas `roles` y `rol_opcion` gestionan los booleanos `lectura`, `escritura` y `borrado`. En el frontend, los botones de creación/edición (`[Nuevo]`, `[Guardar]`) deben **ocultarse del DOM si `escritura = false`**, y los botones de eliminación/anulación deben **ocultarse del DOM si `borrado = false`**.
 
 3. **Frontend con Separación Estricta de Responsabilidades (SoC):**
    * El frontend se desarrolla en **React + Vite + TypeScript**.

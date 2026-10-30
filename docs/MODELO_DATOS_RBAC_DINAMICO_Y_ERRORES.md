@@ -34,6 +34,9 @@ erDiagram
         uuid id PK
         string nombre UK
         string descripcion
+        boolean lectura "Habilita lectura global"
+        boolean escritura "Habilita escritura global"
+        boolean borrado "Habilita borrado global"
         boolean is_active
         boolean is_deleted
         timestamp deleted_at
@@ -67,10 +70,9 @@ erDiagram
         uuid id PK
         uuid rol_id FK
         uuid menu_opcion_id FK
-        boolean puede_leer
-        boolean puede_escribir
-        boolean puede_modificar
-        boolean puede_eliminar
+        boolean lectura "Habilita ver opción y consultar datos"
+        boolean escritura "Muestra botones Nuevo y Editar"
+        boolean borrado "Muestra botones Eliminar y Anular"
         boolean is_deleted
         timestamp deleted_at
     }
@@ -80,6 +82,21 @@ erDiagram
         uuid menu_opcion_id FK
         uuid endpoint_id FK
     }
+```
+
+### 2.1 Visibilidad Condicional de Botones de Acción en Frontend
+
+Las columnas booleanas `lectura`, `escritura` y `borrado` de la tabla `rol_opcion` determinan dinámicamente si los botones de acción se renderizan u ocultan en cada pantalla:
+* Si `lectura = false`: la opción de menú completa no se visualiza en el Sidebar ni se permite la navegación a la ruta.
+* Si `escritura = false`: la pantalla se renderiza en **modo solo lectura**; los botones de creación o edición (`[ + Nuevo ]`, `[ Guardar ]`, `[ Modificar ]`) se ocultan completamente del DOM.
+* Si `borrado = false`: los botones destructivos (`[ Eliminar ]`, `[ Anular ]`, `[ Cancelar Turno ]`) se ocultan completamente del DOM.
+
+```tsx
+// Patrón de renderizado condicional en componentes:
+const { canWrite, canDelete } = useCurrentOptionPermissions();
+
+{canWrite && <Button onClick={handleCreate}>Nuevo Registro</Button>}
+{canDelete && <Button variant="danger" onClick={handleDelete}>Eliminar</Button>}
 ```
 
 ### 2.1 Flujo Operativo Dinámico (Frontend & Backend)
@@ -219,3 +236,4 @@ Todas las respuestas de error del sistema se unifican bajo la especificación in
 * **`502 Bad Gateway (ERR_EXTERNAL_GATEWAY_DOWN)`:** Caída o respuesta errónea de APIs externas (Web Service de facturación tributaria, Meta Cloud WhatsApp o Twilio).
 * **`503 Service Unavailable (ERR_DATABASE_UNAVAILABLE)`:** Contenedor de PostgreSQL o Redis en proceso de recuperación o mantenimiento programado.
 * **`504 Gateway Timeout (ERR_UPSTREAM_TIMEOUT)`:** Tiempo de espera excedido al procesar operaciones complejas (ej. timbrado de factura o generación de PDFs pesados).
+

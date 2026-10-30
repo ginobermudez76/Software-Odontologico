@@ -11,6 +11,7 @@
 * [`docs/ESPECIFICACION_PANTALLAS_UI_UX.md`](./docs/ESPECIFICACION_PANTALLAS_UI_UX.md) (Wireframes y Pantallas UI/UX)
 * [`docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md`](./docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md) (Estándares de Seguridad OWASP y ASVS Nivel 2)
 * [`docs/MODELO_DATOS_RBAC_DINAMICO_Y_ERRORES.md`](./docs/MODELO_DATOS_RBAC_DINAMICO_Y_ERRORES.md) (RBAC Dinámico, Partial Indexes y Errores RFC 7807)
+* [`docs/DIAGRAMA_BASE_DE_DATOS_ERD.md`](./docs/DIAGRAMA_BASE_DE_DATOS_ERD.md) (Diagrama Integral de Base de Datos y Relaciones ERD)
 
 ---
 
