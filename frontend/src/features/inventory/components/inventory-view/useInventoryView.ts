@@ -26,3 +26,4 @@ export const useInventoryView = (initialTab: InventoryTab = 'supplies', explicit
     canWrite,
   };
 };
+

@@ -54,3 +54,4 @@ export class AnalyticsController {
     return this.analyticsService.createAuditLogEntry(dto);
   }
 }
+

@@ -19,3 +19,4 @@ export class GenerateSettlementDto {
   @IsString()
   notes?: string;
 }
+

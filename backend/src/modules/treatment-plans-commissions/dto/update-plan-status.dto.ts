@@ -18,3 +18,4 @@ export class UpdatePlanStatusDto {
   @IsString()
   rejectionReason?: string;
 }
+

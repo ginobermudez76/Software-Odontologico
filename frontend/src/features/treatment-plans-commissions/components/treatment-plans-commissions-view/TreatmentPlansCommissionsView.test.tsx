@@ -32,3 +32,4 @@ describe('TreatmentPlansCommissionsView Component', () => {
     expect(screen.getByText('Mock Doctor Settlement Manager')).toBeDefined();
   });
 });
+

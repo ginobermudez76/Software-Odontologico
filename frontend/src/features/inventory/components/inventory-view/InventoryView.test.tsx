@@ -41,3 +41,4 @@ describe('InventoryView Component', () => {
     expect(screen.getByText('Mock Procedure Recipe Config')).toBeDefined();
   });
 });
+

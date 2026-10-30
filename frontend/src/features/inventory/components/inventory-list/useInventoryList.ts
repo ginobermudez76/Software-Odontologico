@@ -182,3 +182,4 @@ export const useInventoryList = (
     reload: loadSupplies,
   };
 };
+

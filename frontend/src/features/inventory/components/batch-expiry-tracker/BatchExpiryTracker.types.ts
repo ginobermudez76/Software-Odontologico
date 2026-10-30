@@ -14,3 +14,4 @@ export interface ExpirySummary {
   preventivo60: number;
   total: number;
 }
+

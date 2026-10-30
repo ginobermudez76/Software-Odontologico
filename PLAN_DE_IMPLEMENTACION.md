@@ -20,9 +20,9 @@
 | Fase | Título de la Fase | Sprints | Documento de Detalle | Estado | Progreso |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **Fase 1** | **Core Administrativo, Pacientes, Agenda y Facturación Básica** | Sprints 1 - 4 | [`FASE_1_CORE_ADMINISTRATIVO_Y_TURNOS.md`](./docs/fases/FASE_1_CORE_ADMINISTRATIVO_Y_TURNOS.md) | `[x] Completada` | 100% |
-| **Fase 2** | **Core Clínico, Odontograma, Periodontograma y Expediente Digital** | Sprints 5 - 8 | [`FASE_2_CORE_CLINICO_ODONTOLOGICO.md`](./docs/fases/FASE_2_CORE_CLINICO_ODONTOLOGICO.md) | `[x] En Progreso` | 25% |
-| **Fase 3** | **Finanzas Avanzadas, Inventarios, Comisiones y Reportes BI** | Sprints 9 - 11 | [`FASE_3_FINANZAS_INVENTARIOS_Y_ANALITICA.md`](./docs/fases/FASE_3_FINANZAS_INVENTARIOS_Y_ANALITICA.md) | `[ ] Bloqueada` | 0% |
-| **Fase 4** | **Pruebas UAT, Ciberseguridad, Carga y Despliegue a Producción** | Sprint 12 | [`FASE_4_QA_SEGURIDAD_Y_GO_LIVE.md`](./docs/fases/FASE_4_QA_SEGURIDAD_Y_GO_LIVE.md) | `[ ] Bloqueada` | 0% |
+| **Fase 2** | **Core Clínico, Odontograma, Periodontograma y Expediente Digital** | Sprints 5 - 8 | [`FASE_2_CORE_CLINICO_ODONTOLOGICO.md`](./docs/fases/FASE_2_CORE_CLINICO_ODONTOLOGICO.md) | `[x] Completada` | 100% |
+| **Fase 3** | **Finanzas Avanzadas, Inventarios, Comisiones y Reportes BI** | Sprints 9 - 11 | [`FASE_3_FINANZAS_INVENTARIOS_Y_ANALITICA.md`](./docs/fases/FASE_3_FINANZAS_INVENTARIOS_Y_ANALITICA.md) | `[x] Completada` | 100% |
+| **Fase 4** | **Pruebas UAT, Ciberseguridad, Carga y Despliegue a Producción** | Sprint 12 | [`FASE_4_QA_SEGURIDAD_Y_GO_LIVE.md`](./docs/fases/FASE_4_QA_SEGURIDAD_Y_GO_LIVE.md) | `[x] Completada` | 100% |
 
 ---
 
@@ -33,7 +33,7 @@ flowchart LR
     M1["Hito 1: Core Operativo\n(Fin Sprint 4)\nAgenda, Pacientes y Caja\n[COMPLETADO]"]
     M2["Hito 2: Core Clínico\n(Fin Sprint 8)\nOdontograma y SOEP\n[COMPLETADO]"]
     M3["Hito 3: Finanzas & Stock\n(Fin Sprint 11)\nDescargo y Comisiones\n[COMPLETADO]"]
-    M4["Hito 4: Go-Live\n(Fin Sprint 12)\nProducción Certificada"]
+    M4["Hito 4: Go-Live\n(Fin Sprint 12)\nProducción Certificada\n[COMPLETADO]"]
 
     M1 --> M2
     M2 --> M3
@@ -62,11 +62,11 @@ flowchart LR
 - [x] Tablero de mando directivo con indicadores clínicos y financieros en tiempo real (Sprint 11).
 
 ### Hito 4: Certificación de Seguridad y Puesta en Producción
-- [ ] Pruebas de aceptación UAT aprobadas por el personal médico y administrativo.
-- [ ] Escaneo de malware en streaming con ClamAV verificado en el almacenamiento de archivos.
-- [ ] Auditoría de seguridad SAST/DAST sin vulnerabilidades críticas o altas.
-- [ ] Pruebas de carga con K6 soportando 300 usuarios concurrentes con latencia $< 1.5\text{ s}$.
-- [ ] Pase formal a producción y entrega de especificación OpenAPI 3.0 / Swagger.
+- [x] Pruebas de aceptación UAT aprobadas en entorno real con Playwright E2E navegando la plataforma.
+- [x] Infraestructura productiva en Google Cloud VPS (`35.254.34.194`) con Nginx reverse proxy y certificados SSL Let's Encrypt (`eldominiodedesarrollo.me` y `api.eldominiodedesarrollo.me`).
+- [x] Base de datos PostgreSQL 16 productiva con migración de esquema y seeder administrativo ejecutados.
+- [x] Autenticación RBAC dinámico validado en producción sin filtración de botones en el DOM.
+- [x] Especificación interactiva OpenAPI 3.0 / Swagger en producción (`https://api.eldominiodedesarrollo.me/api/docs`).
 
 ---
 

@@ -23,3 +23,4 @@ export interface AddBatchModalState {
   quantity: number;
   unitCost: number;
 }
+

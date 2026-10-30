@@ -62,3 +62,4 @@ export interface AuditLogsResponse {
   totalPages: number;
   logs: ForensicAuditLog[];
 }
+

@@ -18,3 +18,4 @@ export interface ProcedureRecipeConfigProps {
   procedures?: ProcedureOption[];
   onRecipeSaved?: (procedureId: string, suppliesCount: number) => void;
 }
+

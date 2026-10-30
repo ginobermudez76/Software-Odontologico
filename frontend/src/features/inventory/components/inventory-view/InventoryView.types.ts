@@ -4,3 +4,4 @@ export interface InventoryViewProps {
   initialTab?: InventoryTab;
   canWrite?: boolean;
 }
+

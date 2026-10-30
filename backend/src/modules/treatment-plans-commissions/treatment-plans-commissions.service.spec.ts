@@ -185,3 +185,4 @@ describe('CommissionsService (Sprint 10 - Regla RN-07)', () => {
     expect(preview.items[0].doctorEarning).toBe(70);
   });
 });
+

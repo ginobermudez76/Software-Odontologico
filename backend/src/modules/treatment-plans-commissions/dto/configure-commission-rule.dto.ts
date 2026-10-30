@@ -43,3 +43,4 @@ export class ConfigureCommissionRuleDto {
   @IsBoolean()
   isActive?: boolean;
 }
+

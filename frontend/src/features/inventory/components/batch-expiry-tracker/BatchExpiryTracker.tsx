@@ -240,3 +240,4 @@ export const BatchExpiryTracker: React.FC<BatchExpiryTrackerProps> = ({
     </div>
   );
 };
+

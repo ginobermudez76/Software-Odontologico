@@ -60,3 +60,4 @@ export const TreatmentPlansCommissionsView: React.FC<TreatmentPlansCommissionsVi
     </div>
   );
 };
+

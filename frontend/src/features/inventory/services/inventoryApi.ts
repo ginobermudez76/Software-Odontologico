@@ -58,3 +58,4 @@ export const inventoryApi = {
     return res.data;
   },
 };
+

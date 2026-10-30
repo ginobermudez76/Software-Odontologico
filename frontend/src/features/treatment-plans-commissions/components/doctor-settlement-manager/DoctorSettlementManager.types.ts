@@ -11,3 +11,4 @@ export interface DoctorSettlementManagerProps {
   doctors?: DoctorOption[];
   onSettlementGenerated?: (settlement: CommissionSettlement) => void;
 }
+

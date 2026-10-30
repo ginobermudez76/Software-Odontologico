@@ -99,3 +99,4 @@ export class CreateTreatmentPlanDto {
   @Type(() => TreatmentPlanPhaseInputDto)
   phases: TreatmentPlanPhaseInputDto[];
 }
+

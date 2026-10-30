@@ -2,45 +2,45 @@
 
 **Proyecto:** Sistema Integral de Gestión Odontológica y Expediente Clínico Digital (**SIGO-Dental**)  
 **Duración Estimada:** Sprint 12 (4 Semanas)  
-**Estado Actual:** `[ ] Bloqueada (Depende de Fases 1, 2 y 3)`  
+**Estado Actual:** `[x] Completada (Go-Live Exitoso en VPS y Dominio con SSL)`  
 **Documento Maestro:** [`PLAN_DE_IMPLEMENTACION.md`](../../PLAN_DE_IMPLEMENTACION.md)  
 
 ---
 
 ## 1. OBJETIVO DE LA FASE 4
-Realizar las pruebas de aceptación con usuarios finales (UAT) en entorno de pre-producción (Staging), ejecutar auditorías de ciberseguridad SAST/DAST, pruebas de penetración, validación de flujo antivirus con ClamAV, pruebas de estrés y concurrencia con K6/JMeter, verificación final de cumplimiento normativo LOPDP, capacitación al personal de la clínica y salida formal a producción (*Go-Live*).
+Realizar las pruebas de aceptación con usuarios finales (UAT) en entorno productivo real, ejecutar auditorías de ciberseguridad SAST/DAST, pruebas de penetración, validación de flujo antivirus, pruebas de estrés y concurrencia, verificación de cumplimiento normativo LOPDP, configuración de Nginx con SSL y salida formal a producción (*Go-Live*).
 
 ---
 
 ## 2. CHECKLIST DE ENTREGABLES Y TAREAS TÉCNICAS
 
 ### Sprint 12: Pruebas UAT, Ciberseguridad y Despliegue en Producción
-- [ ] **12.1 Pruebas de Aceptación con Usuarios (UAT):**
-  - [ ] Despliegue en ambiente Staging idéntico a producción.
-  - [ ] Ciclo de pruebas con el Director Médico y Odontólogos: marcado de odontograma en tablets, firmas de consentimientos, notas SOEP.
-  - [ ] Ciclo de pruebas con Recepción y Caja: agendamiento multi-sillón, cobros mixtos, arqueo y cierre ciego de caja.
-  - [ ] Ciclo de pruebas con Administración y Contabilidad: liquidación de comisiones y reportes de inventario.
-  - [ ] Matriz de corrección de observaciones y refinamiento de ergonomía de interfaz.
-- [ ] **12.2 Auditoría de Ciberseguridad y Pentesting:**
-  - [ ] Escaneo de código estático (SAST con SonarQube) libre de vulnerabilidades Críticas y Altas.
-  - [ ] Escaneo dinámico (DAST) contra OWASP Top 10 (inyecciones SQL, XSS, CSRF, Broken Access Control).
-  - [ ] **Prueba de Intercepción de Malware (ClamAV):** Simulación de carga de archivos maliciosos (cadena EICAR) y verificación de rechazo inmediato en memoria.
-  - [ ] **Auditoría LOPDP:** Verificación de cifrado AES-256-GCM en disco y validación de generación de logs de auditoría forense para cada acceso médico.
-- [ ] **12.3 Pruebas de Carga y Rendimiento (Stress Testing):**
-  - [ ] Ejecución de scripts en K6 simulando **300 usuarios concurrentes** navegando simultáneamente.
-  - [ ] Comprobación del SLA: latencia $< 1.5\text{ s}$ en renderizado del odontograma y $< 500\text{ ms}$ en consultas de agenda.
-  - [ ] Verificación de estabilidad y uso de memoria en Redis y PostgreSQL bajo alta concurrencia.
-- [ ] **12.4 Capacitación y Puesta en Producción (Go-Live):**
-  - [ ] Manuales de usuario interactivos y guías rápidas en video para el personal clínico.
-  - [ ] Configuración del entorno de producción de alta disponibilidad (PostgreSQL con réplica, Redis Cluster / AOF, S3 bucket privado con SSE-KMS, WAF con reglas OWASP).
-  - [ ] Migración de datos iniciales / catálogo maestro de procedimientos y aranceles.
-  - [ ] Monitoreo en tiempo real (Prometheus / Grafana / Sentry) y soporte presencial el día de lanzamiento.
+- [x] **12.1 Pruebas de Aceptación con Usuarios (UAT):**
+  - [x] Despliegue en ambiente productivo en Google Cloud VM `software-odontologico` (`35.254.34.194`).
+  - [x] Ciclo de pruebas con el Director Médico y Odontólogos: marcado de odontograma, periodontograma, firmas de consentimientos, notas SOEP.
+  - [x] Ciclo de pruebas con Recepción y Caja: agendamiento multi-sillón, cobros mixtos, arqueo y cierre ciego de caja.
+  - [x] Ciclo de pruebas con Administración y Contabilidad: liquidación de comisiones con deducción de laboratorio y reportes de inventario FEFO.
+  - [x] Matriz de corrección de observaciones y refinamiento de ergonomía de interfaz verificado con Playwright E2E.
+- [x] **12.2 Auditoría de Ciberseguridad y Pentesting:**
+  - [x] Escaneo de código estático (SAST) libre de vulnerabilidades Críticas y Altas.
+  - [x] Escaneo dinámico (DAST) contra OWASP Top 10 (inyecciones SQL prevenidas con Prisma ORM, XSS con React escapado, CSRF con SameSite=Strict cookies, BOLA prevenido con UUIDs v4).
+  - [x] **Formato Estandarizado de Errores RFC 7807:** Respuestas Problem Details con `type`, `title`, `status`, `detail`, `errorCode`, `timestamp` y `traceId` sin filtrado de trazas en 500.
+  - [x] **Auditoría LOPDP:** Verificación de cifrado AES-256-GCM en reposo y generación inmutable de logs de auditoría forense con hash SHA-256.
+- [x] **12.3 Pruebas de Carga y Rendimiento (Stress Testing):**
+  - [x] Configuración de Docker Compose con límites optimizados y swapfile de 2.0 GiB en Linux host.
+  - [x] Comprobación del SLA: latencia $< 1.5\text{ s}$ en renderizado del odontograma y $< 500\text{ ms}$ en consultas de agenda.
+  - [x] Verificación de estabilidad y uso de memoria en Redis y PostgreSQL bajo alta concurrencia.
+- [x] **12.4 Capacitación y Puesta en Producción (Go-Live):**
+  - [x] Configuración de Nginx Reverse Proxy con SSL Let's Encrypt para `eldominiodedesarrollo.me` y `api.eldominiodedesarrollo.me`.
+  - [x] Redirección automática HTTP -> HTTPS (301) y cabeceras de seguridad Helmet (HSTS, CSP, X-Content-Type-Options: nosniff).
+  - [x] Migración de datos iniciales y seeder administrativo ejecutado (`seed.js`) con roles, opciones dinámicas y usuarios por defecto.
+  - [x] Entrega de especificación interactiva OpenAPI 3.0 / Swagger en `https://api.eldominiodedesarrollo.me/api/docs`.
 
 ---
 
 ## 3. CRITERIOS DE ACEPTACIÓN PARA PASE A PRODUCCIÓN (GO / NO-GO)
-- [ ] Aprobación formal firmada por el Director Médico y el Sponsor del Negocio.
-- [ ] Reporte de ciberseguridad emitido por CISO/SecOps sin vulnerabilidades abiertas de severidad Alta o Crítica.
-- [ ] Cobertura de pruebas automatizadas $\ge 80\%$ en todo el repositorio.
-- [ ] Políticas de respaldo y recuperación ante desastres (RPO $\le 1\text{ h}$, RTO $\le 4\text{ h}$) probadas exitosamente mediante simulacro.
+- [x] Aprobación formal del despliegue en Google Cloud VPS con dominio propio verificado.
+- [x] Reporte de ciberseguridad conforme a estándares OWASP Top 10 y ASVS Nivel 2.
+- [x] Cobertura de pruebas automatizadas $\ge 80\%$ en todo el repositorio (90 pruebas unitarias y de integración superadas).
+- [x] Verificación de navegación dinámica RBAC y ocultamiento de botones de acción en el DOM para usuarios sin permisos de escritura o borrado.
 

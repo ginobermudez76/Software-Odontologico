@@ -92,3 +92,4 @@ export class InventoryController {
     return this.inventoryService.dischargeStockByProcedure(dto, req.user?.id);
   }
 }
+

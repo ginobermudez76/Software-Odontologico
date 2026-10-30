@@ -109,3 +109,4 @@ export const useAuditLogViewer = (initialResource?: string) => {
     refresh: loadAuditLogs,
   };
 };
+

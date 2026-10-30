@@ -30,3 +30,4 @@ export class CreateSupplyDto {
   @Min(0)
   minStock?: number;
 }
+

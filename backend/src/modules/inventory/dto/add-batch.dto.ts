@@ -23,3 +23,4 @@ export class AddBatchDto {
   @Min(0)
   unitCost: number;
 }
+

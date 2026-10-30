@@ -53,3 +53,5 @@ clamav_definitions/
 # Codegraph / Herramientas de agente
 .codegraph/
 
+
+.playwright-mcp/

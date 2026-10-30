@@ -64,3 +64,4 @@ export interface RecipeSupplyItem {
 export interface ConfigureRecipePayload {
   supplies: RecipeSupplyItem[];
 }
+

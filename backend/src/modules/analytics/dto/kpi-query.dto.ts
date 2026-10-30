@@ -17,3 +17,4 @@ export class KpiQueryDto {
   @IsDateString()
   endDate?: string;
 }
+

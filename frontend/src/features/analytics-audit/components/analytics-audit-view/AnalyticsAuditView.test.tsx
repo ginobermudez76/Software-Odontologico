@@ -32,3 +32,4 @@ describe('AnalyticsAuditView Component', () => {
     expect(screen.getByText('Mock Audit Log Viewer')).toBeDefined();
   });
 });
+

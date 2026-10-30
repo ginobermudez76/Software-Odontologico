@@ -382,3 +382,4 @@ export const InventoryList: React.FC<InventoryListProps> = ({
     </div>
   );
 };
+

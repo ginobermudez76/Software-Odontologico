@@ -43,3 +43,4 @@ export class AuditLogQueryDto {
   @Type(() => Number)
   page?: number = 1;
 }
+

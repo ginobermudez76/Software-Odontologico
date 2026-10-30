@@ -41,3 +41,4 @@ export class CreateAuditEntryDto {
   @IsOptional()
   metadata?: any;
 }
+

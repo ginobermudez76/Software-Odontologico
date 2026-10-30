@@ -23,3 +23,4 @@ export class ConvertPlanItemToAppointmentDto {
   @IsString()
   reason?: string;
 }
+

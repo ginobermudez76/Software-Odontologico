@@ -20,3 +20,4 @@ export class ConfigureProcedureRecipeDto {
   @Type(() => RecipeSupplyItemDto)
   supplies: RecipeSupplyItemDto[];
 }
+

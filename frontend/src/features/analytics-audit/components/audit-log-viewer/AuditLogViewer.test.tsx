@@ -53,3 +53,4 @@ describe('AuditLogViewer Component (Sprint 11 - ASVS Nivel 2)', () => {
     });
   });
 });
+

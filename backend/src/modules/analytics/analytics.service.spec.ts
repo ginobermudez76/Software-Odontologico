@@ -99,3 +99,4 @@ describe('AnalyticsService (Sprint 11 - BI y Auditoría Forense)', () => {
     expect(entry.integrityHash).toHaveLength(64); // SHA-256 hex string tiene exactamente 64 caracteres
   });
 });
+

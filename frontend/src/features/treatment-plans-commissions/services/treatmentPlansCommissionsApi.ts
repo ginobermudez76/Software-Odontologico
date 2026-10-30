@@ -99,3 +99,4 @@ export const treatmentPlansCommissionsApi = {
     return res.data;
   },
 };
+
