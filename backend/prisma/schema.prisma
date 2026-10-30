@@ -92,8 +92,10 @@ model User {
 
   role                 Role          @relation(fields: [roleId], references: [id])
   branch               Branch        @relation(fields: [branchId], references: [id])
-  doctorAppointments   Appointment[] @relation("DoctorAppointments")
-  cashShifts           CashShift[]   @relation("CashierShifts")
+  doctorAppointments   Appointment[]   @relation("DoctorAppointments")
+  doctorEvolutionNotes EvolutionNote[] @relation("DoctorEvolutionNotes")
+  doctorPrescriptions  Prescription[]  @relation("DoctorPrescriptions")
+  cashShifts           CashShift[]     @relation("CashierShifts")
   invoices             Invoice[]     @relation("CashierInvoices")
   auditLogs            AuditLog[]
 
@@ -201,20 +203,84 @@ model Patient {
 }
 
 model ClinicalRecord {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId            String    @unique @map("patient_id") @db.Uuid
+  recordNumber         String    @unique @map("record_number") @db.VarChar(30)
+  pathologiesEncrypted String?   @map("pathologies_encrypted") @db.Text // AES-256-GCM
+  allergiesEncrypted   String?   @map("allergies_encrypted") @db.Text   // AES-256-GCM
+  visibleAlerts        Json?     @map("visible_alerts")
+  initialOdontogram    Json?     @map("initial_odontogram")
+  evolutionaryOdontogram Json?   @map("evolutionary_odontogram")
+  periodontogramData   Json?     @map("periodontogram_data")
+  isDeleted            Boolean   @default(false) @map("is_deleted")
+  deletedAt            DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  patient          Patient          @relation(fields: [patientId], references: [id])
+  evolutionNotes   EvolutionNote[]
+  informedConsents InformedConsent[]
+  prescriptions    Prescription[]
+
+  @@map("clinical_records")
+}
+
+model EvolutionNote {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clinicalRecordId String    @map("clinical_record_id") @db.Uuid
+  doctorId         String    @map("doctor_id") @db.Uuid
+  subjective       String    @db.Text
+  objective        String    @db.Text
+  assessment       String    @db.Text // Diagnósticos y CIE-10 Odontológico
+  plan             String    @db.Text // Plan de tratamiento / receta
+  isLocked         Boolean   @default(false) @map("is_locked")
+  lockedAt         DateTime? @map("locked_at") @db.Timestamptz
+  isAdenda         Boolean   @default(false) @map("is_adenda")
+  originalNoteId   String?   @map("original_note_id") @db.Uuid
+  isDeleted        Boolean   @default(false) @map("is_deleted")
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  clinicalRecord   ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
+  doctor           User           @relation("DoctorEvolutionNotes", fields: [doctorId], references: [id])
+
+  @@map("evolution_notes")
+}
+
+model InformedConsent {
   id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  patientId          String    @unique @map("patient_id") @db.Uuid
-  recordNumber       String    @unique @map("record_number") @db.VarChar(30)
-  pathologiesEncrypted String? @map("pathologies_encrypted") @db.Text // AES-256-GCM
-  allergiesEncrypted   String? @map("allergies_encrypted") @db.Text   // AES-256-GCM
-  visibleAlerts      Json?     @map("visible_alerts")
+  clinicalRecordId   String    @map("clinical_record_id") @db.Uuid
+  procedureName      String    @map("procedure_name") @db.VarChar(150)
+  risksDescription   String    @map("risks_description") @db.Text
+  patientSignature   String?   @map("patient_signature") @db.Text
+  otpCode            String?   @map("otp_code") @db.VarChar(10)
+  isSigned           Boolean   @default(false) @map("is_signed")
+  signedAt           DateTime? @map("signed_at") @db.Timestamptz
   isDeleted          Boolean   @default(false) @map("is_deleted")
   deletedAt          DateTime? @map("deleted_at") @db.Timestamptz
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
-  patient Patient @relation(fields: [patientId], references: [id])
+  clinicalRecord     ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
 
-  @@map("clinical_records")
+  @@map("informed_consents")
+}
+
+model Prescription {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clinicalRecordId   String    @map("clinical_record_id") @db.Uuid
+  doctorId           String    @map("doctor_id") @db.Uuid
+  items              Json      // Medicamentos prescritos
+  instructions       String?   @db.Text
+  qrVerificationCode String    @unique @map("qr_verification_code") @db.VarChar(100)
+  isDeleted          Boolean   @default(false) @map("is_deleted")
+  deletedAt          DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  clinicalRecord     ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
+  doctor             User           @relation("DoctorPrescriptions", fields: [doctorId], references: [id])
+
+  @@map("prescriptions")
 }
 
 // ==========================================

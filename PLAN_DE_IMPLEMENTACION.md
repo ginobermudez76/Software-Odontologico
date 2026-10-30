@@ -20,7 +20,7 @@
 | Fase | Título de la Fase | Sprints | Documento de Detalle | Estado | Progreso |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **Fase 1** | **Core Administrativo, Pacientes, Agenda y Facturación Básica** | Sprints 1 - 4 | [`FASE_1_CORE_ADMINISTRATIVO_Y_TURNOS.md`](./docs/fases/FASE_1_CORE_ADMINISTRATIVO_Y_TURNOS.md) | `[x] Completada` | 100% |
-| **Fase 2** | **Core Clínico, Odontograma, Periodontograma y Expediente Digital** | Sprints 5 - 8 | [`FASE_2_CORE_CLINICO_ODONTOLOGICO.md`](./docs/fases/FASE_2_CORE_CLINICO_ODONTOLOGICO.md) | `[ ] Lista para Iniciar` | 0% |
+| **Fase 2** | **Core Clínico, Odontograma, Periodontograma y Expediente Digital** | Sprints 5 - 8 | [`FASE_2_CORE_CLINICO_ODONTOLOGICO.md`](./docs/fases/FASE_2_CORE_CLINICO_ODONTOLOGICO.md) | `[x] En Progreso` | 25% |
 | **Fase 3** | **Finanzas Avanzadas, Inventarios, Comisiones y Reportes BI** | Sprints 9 - 11 | [`FASE_3_FINANZAS_INVENTARIOS_Y_ANALITICA.md`](./docs/fases/FASE_3_FINANZAS_INVENTARIOS_Y_ANALITICA.md) | `[ ] Bloqueada` | 0% |
 | **Fase 4** | **Pruebas UAT, Ciberseguridad, Carga y Despliegue a Producción** | Sprint 12 | [`FASE_4_QA_SEGURIDAD_Y_GO_LIVE.md`](./docs/fases/FASE_4_QA_SEGURIDAD_Y_GO_LIVE.md) | `[ ] Bloqueada` | 0% |
 

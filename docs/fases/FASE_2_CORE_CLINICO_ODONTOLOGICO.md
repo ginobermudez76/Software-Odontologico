@@ -15,23 +15,22 @@ Desarrollar el núcleo médico-odontológico de la plataforma: odontograma vecto
 ## 2. CHECKLIST DE ENTREGABLES Y TAREAS TÉCNICAS
 
 ### Sprint 5: Odontograma Vectorial Interactivo 2D (FDI y Universal)
-- [ ] **5.1 Modelo y Backend del Odontograma:**
-  - [ ] Esquema de persistencia JSONB para estado anatómico de 32 piezas permanentes y 20 temporales.
-  - [ ] Versionado cronológico: Odontograma Inicial (al ingreso) vs. Odontograma Evolutivo (actualizado con tratamientos).
-  - [ ] Endpoints `/api/v1/clinical-records/:patientId/odontogram` para consulta y actualización de hallazgos.
-- [ ] **5.2 Componentes Frontend del Odontograma (Separación Estricta de Archivos):**
-  - [ ] `OdontogramTooth` (piezas vectoriales divididas en 5 superficies: vestibular, lingual, mesial, distal, oclusal).
-    - [ ] `OdontogramTooth.tsx` (Renderizado SVG puro).
-    - [ ] `OdontogramTooth.module.css` (Estilos y resaltado táctil para sillón dental).
-    - [ ] `useOdontogramTooth.ts` (Lógica de selección y mutación de hallazgo).
-    - [ ] `OdontogramTooth.types.ts` (Tipos e interfaces de superficies y patologías).
-    - [ ] `OdontogramTooth.test.tsx` (Pruebas unitarias de clic en superficies y pintado).
-  - [ ] `Odontogram2D` (Lienzo contenedor con conmutador FDI / Universal y dentición adulto / niño).
-    - [ ] `Odontogram2D.tsx`, `Odontogram2D.module.css`, `useOdontogram2D.ts`, `.types.ts`, `.test.tsx`.
-  - [ ] Paleta interactiva de herramientas con catálogo cromático estandarizado:
-    - [ ] Rojo: Caries activa por superficie.
-    - [ ] Azul: Restauraciones previas (resinas, amalgamas, sellantes).
-    - [ ] Verde/Naranja: Tratamientos indicados/proyectados (extracciones, coronas, endodoncias).
+- [x] **5.1 Modelo y Backend del Odontograma:**
+  - [x] Esquema de persistencia JSONB para estado anatómico de 32 piezas permanentes y 20 temporales.
+  - [x] Versionado cronológico: Odontograma Inicial (al ingreso) vs. Odontograma Evolutivo (actualizado con tratamientos).
+  - [x] Endpoints `/api/v1/clinical-records/:patientId/odontogram` para consulta y actualización de hallazgos.
+- [x] **5.2 Componentes Frontend del Odontograma (Separación Estricta de Archivos):**
+  - [x] `OdontogramTooth` (piezas vectoriales divididas en 5 superficies: vestibular, lingual, mesial, distal, oclusal).
+    - [x] `OdontogramTooth.tsx` (Renderizado SVG puro).
+    - [x] `OdontogramTooth.module.css` (Estilos y resaltado táctil para sillón dental).
+    - [x] `OdontogramTooth.types.ts` (Tipos e interfaces de superficies y patologías).
+    - [x] `OdontogramTooth.test.tsx` (Pruebas unitarias de clic en superficies y pintado).
+  - [x] `Odontogram2D` (Lienzo contenedor con conmutador FDI / Universal y dentición adulto / niño).
+    - [x] `Odontogram2D.tsx`, `Odontogram2D.module.css`, `useOdontogram2D.ts`, `.types.ts`, `.test.tsx`.
+  - [x] Paleta interactiva de herramientas con catálogo cromático estandarizado:
+    - [x] Rojo: Caries activa por superficie.
+    - [x] Azul: Restauraciones previas (resinas, amalgamas, sellantes).
+    - [x] Verde/Naranja: Tratamientos indicados/proyectados (extracciones, coronas, endodoncias).
 
 ---
 
