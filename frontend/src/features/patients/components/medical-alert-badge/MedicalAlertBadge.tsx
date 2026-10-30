@@ -4,11 +4,29 @@ import { MedicalAlertBadgeProps } from './MedicalAlertBadge.types';
 import { MaterialIcon } from '../../../../components/icons/MaterialIcon';
 
 export const MedicalAlertBadge: React.FC<MedicalAlertBadgeProps> = ({
-  alerts = [],
+  alerts,
   className = '',
   size = 'sm',
 }) => {
-  if (!alerts || alerts.length === 0) return null;
+  // Normalizar alertas de forma ultra segura (admite array u objeto)
+  let alertList: string[] = [];
+
+  if (Array.isArray(alerts)) {
+    alertList = alerts.filter(Boolean).map(String);
+  } else if (typeof alerts === 'object' && alerts !== null) {
+    const obj = alerts as Record<string, any>;
+    if (Array.isArray(obj.allergies)) {
+      alertList.push(...obj.allergies.filter(Boolean).map((a: any) => `Alergia: ${a}`));
+    }
+    if (Array.isArray(obj.systemicConditions)) {
+      alertList.push(...obj.systemicConditions.filter(Boolean).map(String));
+    }
+    if (obj.bleedingRisk) {
+      alertList.push('Riesgo de Hemorragia / Anticoagulado');
+    }
+  }
+
+  if (alertList.length === 0) return null;
 
   const formatAlertLabel = (alertKey: string) => {
     switch (alertKey) {
@@ -31,9 +49,9 @@ export const MedicalAlertBadge: React.FC<MedicalAlertBadgeProps> = ({
 
   return (
     <div className={`${styles.badgeContainer} ${className}`}>
-      {alerts.map((alert, idx) => (
+      {alertList.map((alert, idx) => (
         <span
-          key={idx}
+          key={`${alert}-${idx}`}
           className={`${styles.badge} ${size === 'md' ? styles.badgeMd : ''}`}
           title="Alerta médica crítica registrada en el expediente"
         >
@@ -44,4 +62,3 @@ export const MedicalAlertBadge: React.FC<MedicalAlertBadgeProps> = ({
     </div>
   );
 };
-

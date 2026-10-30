@@ -173,7 +173,15 @@ export class PatientsService {
         email: p.email,
         phone: p.phone,
         recordNumber: p.clinicalRecord?.recordNumber,
-        visibleAlerts: p.clinicalRecord?.visibleAlerts || [],
+        visibleAlerts: Array.isArray(p.clinicalRecord?.visibleAlerts)
+          ? p.clinicalRecord.visibleAlerts
+          : typeof p.clinicalRecord?.visibleAlerts === 'object' && p.clinicalRecord?.visibleAlerts !== null
+            ? [
+                ...((p.clinicalRecord.visibleAlerts as any).allergies?.map((a: string) => `Alergia: ${a}`) || []),
+                ...((p.clinicalRecord.visibleAlerts as any).systemicConditions || []),
+                ...((p.clinicalRecord.visibleAlerts as any).bleedingRisk ? ['Riesgo de Sangrado'] : []),
+              ]
+            : [],
         createdAt: p.createdAt,
       })),
       meta: {

@@ -1,6 +1,5 @@
 export interface MedicalAlertBadgeProps {
-  alerts: string[];
+  alerts?: string[] | Record<string, any> | any;
   className?: string;
   size?: 'sm' | 'md';
 }
-
