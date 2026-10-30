@@ -48,9 +48,9 @@ flowchart LR
 - [x] Punto de venta con soporte para pagos mixtos y arqueo bajo protocolo de cierre ciego.
 
 ### Hito 2: Expediente Clínico Digital Odontológico
-- [ ] Odontograma vectorial 2D interactivo con soporte de nomenclaturas FDI y Universal.
-- [ ] Marcado anatómico de 5 superficies por pieza dental con histórico inicial vs. evolutivo.
-- [ ] Periodontograma digital automatizado con cálculo en tiempo real de NIC ($PS + MG$).
+- [x] Odontograma vectorial 2D interactivo con soporte de nomenclaturas FDI y Universal.
+- [x] Marcado anatómico de 5 superficies por pieza dental con histórico inicial vs. evolutivo.
+- [x] Periodontograma digital automatizado con cálculo en tiempo real de NIC ($PS + MG$).
 - [ ] Notas de evolución clínica bajo formato SOEP bloqueadas contra edición tras 24 horas.
 - [ ] Consentimientos informados con firma biométrica en pantalla y recetas con código QR.
 

@@ -82,4 +82,120 @@ describe('ClinicalRecordsService', () => {
     expect(mockPrisma.clinicalRecord.update).toHaveBeenCalled();
     expect(mockPrisma.auditLog.create).toHaveBeenCalled();
   });
+
+  describe('Periodontograma & Cálculo de NIC', () => {
+    it('debe calcular correctamente el NIC = PS + MG tanto con recesión (+) como agrandamiento (-)', () => {
+      const teethInput: any = {
+        '16': {
+          toothNumber: 16,
+          vestibular: {
+            distal: { probingDepth: 4, gingivalMargin: 2, bleeding: true, plaque: true }, // NIC = 6 (bolsa)
+            middle: { probingDepth: 5, gingivalMargin: -2, bleeding: false, plaque: false }, // NIC = 3 (pseudobolsa)
+            mesial: { probingDepth: 3, gingivalMargin: 0, bleeding: false, plaque: true }, // NIC = 3
+          },
+          lingual: {
+            distal: { probingDepth: 6, gingivalMargin: 1, bleeding: true, plaque: true }, // NIC = 7 (bolsa profunda)
+            middle: { probingDepth: 2, gingivalMargin: 0, bleeding: false, plaque: false }, // NIC = 2
+            mesial: { probingDepth: 3, gingivalMargin: 0, bleeding: false, plaque: false }, // NIC = 3
+          },
+        },
+      };
+
+      const result = service.calculatePeriodontogramMetrics(teethInput, 'Evaluación cuadrante 1');
+
+      // Verificación de NIC por sitio
+      const tooth16 = result.teeth['16'];
+      expect(tooth16.vestibular.distal.clinicalAttachmentLevel).toBe(6); // 4 + 2
+      expect(tooth16.vestibular.middle.clinicalAttachmentLevel).toBe(3); // 5 + (-2)
+      expect(tooth16.vestibular.mesial.clinicalAttachmentLevel).toBe(3); // 3 + 0
+      expect(tooth16.lingual.distal.clinicalAttachmentLevel).toBe(7); // 6 + 1
+
+      // Verificación de métricas globales:
+      // Total sitios = 6
+      // Sitios con sangrado = 2 (distal-V, distal-L) -> 2/6 = 33.3%
+      // Sitios con placa = 3 (distal-V, mesial-V, distal-L) -> 3/6 = 50.0%
+      // Bolsas periodontales (PS >= 4) = 3 (4mm, 5mm, 6mm)
+      // Bolsas profundas (PS >= 6) = 1 (6mm)
+      expect(result.summary.evaluatedTeethCount).toBe(1);
+      expect(result.summary.bleedingOnProbingIndex).toBe(33.3);
+      expect(result.summary.olearyPlaqueIndex).toBe(50.0);
+      expect(result.summary.periodontalPocketsCount).toBe(3);
+      expect(result.summary.deepPocketsCount).toBe(1);
+    });
+
+    it('debe excluir del conteo los dientes ausentes (isMissing)', () => {
+      const teethInput: any = {
+        '18': {
+          toothNumber: 18,
+          isMissing: true,
+          vestibular: {
+            distal: { probingDepth: 0, gingivalMargin: 0 },
+            middle: { probingDepth: 0, gingivalMargin: 0 },
+            mesial: { probingDepth: 0, gingivalMargin: 0 },
+          },
+          lingual: {
+            distal: { probingDepth: 0, gingivalMargin: 0 },
+            middle: { probingDepth: 0, gingivalMargin: 0 },
+            mesial: { probingDepth: 0, gingivalMargin: 0 },
+          },
+        },
+      };
+
+      const result = service.calculatePeriodontogramMetrics(teethInput);
+      expect(result.summary.evaluatedTeethCount).toBe(0);
+      expect(result.summary.bleedingOnProbingIndex).toBe(0);
+      expect(result.summary.olearyPlaqueIndex).toBe(0);
+      expect(result.summary.periodontalPocketsCount).toBe(0);
+    });
+
+    it('debe persistir el periodontograma y generar registro de auditoría', async () => {
+      mockPrisma.clinicalRecord.findUnique.mockResolvedValueOnce({
+        id: 'cr-1',
+        isDeleted: false,
+      });
+
+      mockPrisma.clinicalRecord.update.mockResolvedValueOnce({
+        id: 'cr-1',
+        recordNumber: 'EXP-2026-00001',
+        periodontogramData: {},
+        updatedAt: new Date(),
+      });
+
+      const result = await service.updatePeriodontogram(
+        'p-1',
+        {
+          teeth: {
+            '11': {
+              toothNumber: 11,
+              vestibular: {
+                distal: { probingDepth: 2, gingivalMargin: 0 },
+                middle: { probingDepth: 2, gingivalMargin: 0 },
+                mesial: { probingDepth: 2, gingivalMargin: 0 },
+              },
+              lingual: {
+                distal: { probingDepth: 2, gingivalMargin: 0 },
+                middle: { probingDepth: 2, gingivalMargin: 0 },
+                mesial: { probingDepth: 2, gingivalMargin: 0 },
+              },
+            },
+          },
+        },
+        'doc-1',
+      );
+
+      expect(result.recordId).toBe('cr-1');
+      expect(result.periodontogram.summary.evaluatedTeethCount).toBe(1);
+      expect(mockPrisma.clinicalRecord.update).toHaveBeenCalled();
+      expect(mockPrisma.auditLog.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: 'UPDATE',
+            metadata: expect.objectContaining({
+              action: 'UPDATE_PERIODONTOGRAM',
+            }),
+          }),
+        }),
+      );
+    });
+  });
 });

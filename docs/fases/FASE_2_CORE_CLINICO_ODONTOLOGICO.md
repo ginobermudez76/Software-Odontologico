@@ -35,16 +35,16 @@ Desarrollar el núcleo médico-odontológico de la plataforma: odontograma vecto
 ---
 
 ### Sprint 6: Periodontograma Digital y Cálculo Automático de NIC
-- [ ] **6.1 Motor de Cálculo Periodontal (Backend & Frontend):**
-  - [ ] Algoritmo reactivo de cálculo: $\text{NIC} = \text{Profundidad de Sondaje (PS)} + \text{Margen Gingival (MG)}$.
-  - [ ] Registro de 6 puntos por pieza dental (Mesio, Medio y Disto en Vestibular y Lingual/Palatino).
-  - [ ] Captura de indicadores auxiliares: Sangrado al sondaje (SS), Supuración (SUP), Movilidad (I, II, III), Furca (I, II, III, IV).
-  - [ ] Cálculo automático de índices de placa bacteriana e índice de sangrado gingival (BOP).
-- [ ] **6.2 Componente `PeriodontogramTable` (Frontend):**
-  - [ ] `PeriodontogramTable.tsx` (Matriz tabular accesible optimizada para ingreso rápido por teclado numérico o tablet).
-  - [ ] `PeriodontogramTable.module.css` (Diseño de celdas con semaforización de alerta periodontal $> 4\text{ mm}$).
-  - [ ] `usePeriodontogramTable.ts` (Validación de rangos 0-15 mm y cálculo en tiempo real).
-  - [ ] `PeriodontogramTable.test.tsx` (Pruebas de cálculo exacto de NIC y alertas).
+- [x] **6.1 Motor de Cálculo Periodontal (Backend & Frontend):**
+  - [x] Algoritmo reactivo de cálculo: $\text{NIC} = \text{Profundidad de Sondaje (PS)} + \text{Margen Gingival (MG)}$.
+  - [x] Registro de 6 puntos por pieza dental (Mesio, Medio y Disto en Vestibular y Lingual/Palatino).
+  - [x] Captura de indicadores auxiliares: Sangrado al sondaje (SS), Supuración (SUP), Movilidad (I, II, III), Furca (I, II, III, IV).
+  - [x] Cálculo automático de índices de placa bacteriana e índice de sangrado gingival (BOP).
+- [x] **6.2 Componente `PeriodontogramTable` (Frontend):**
+  - [x] `PeriodontogramTable.tsx` (Matriz tabular accesible optimizada para ingreso rápido por teclado numérico o tablet).
+  - [x] `PeriodontogramTable.module.css` (Diseño de celdas con semaforización de alerta periodontal $> 4\text{ mm}$).
+  - [x] `usePeriodontogramTable.ts` (Validación de rangos 0-15 mm y cálculo en tiempo real).
+  - [x] `PeriodontogramTable.test.tsx` (Pruebas de cálculo exacto de NIC y alertas).
 
 ---
 

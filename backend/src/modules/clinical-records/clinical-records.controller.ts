@@ -13,6 +13,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ClinicalRecordsService } from './clinical-records.service';
 import { UpdateOdontogramDto } from './dto/update-odontogram.dto';
+import { UpdatePeriodontogramDto } from './dto/update-periodontogram.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Expediente Clínico & Odontograma')
@@ -42,4 +43,26 @@ export class ClinicalRecordsController {
   ) {
     return this.clinicalRecordsService.updateOdontogram(patientId, dto, req.user?.id);
   }
+
+  @Get(':patientId/periodontogram')
+  @ApiOperation({ summary: 'Obtener el periodontograma digital y métricas del paciente' })
+  @ApiResponse({ status: 200, description: 'Periodontograma obtenido con éxito' })
+  @ApiResponse({ status: 404, description: 'Expediente no encontrado' })
+  async getPeriodontogram(@Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string) {
+    return this.clinicalRecordsService.getPeriodontogram(patientId);
+  }
+
+  @Put(':patientId/periodontogram')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Actualizar periodontograma con cálculo de NIC e índices periodontales' })
+  @ApiResponse({ status: 200, description: 'Periodontograma guardado con éxito' })
+  @ApiResponse({ status: 404, description: 'Expediente no encontrado' })
+  async updatePeriodontogram(
+    @Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string,
+    @Body() dto: UpdatePeriodontogramDto,
+    @Req() req: any,
+  ) {
+    return this.clinicalRecordsService.updatePeriodontogram(patientId, dto, req.user?.id);
+  }
 }
+
