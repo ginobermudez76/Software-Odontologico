@@ -252,8 +252,8 @@ function main() {
                         { email: 'director@sigodental.com', documentNumber: '1700000002', firstName: 'Dr. Roberto', lastName: 'Méndez', role: 'DIRECTOR_MEDICO' },
                         { email: 'odontologo@sigodental.com', documentNumber: '1700000003', firstName: 'Dra. Carla', lastName: 'Ortiz', role: 'ODONTOLOGO' },
                         { email: 'recepcion@sigodental.com', documentNumber: '1700000004', firstName: 'Mariana', lastName: 'Silva', role: 'RECEPCIONISTA' },
-                        { email: 'cajero@sigodental.com', documentNumber: '1700000005', firstName: 'Juan Carlos', lastName: 'Pérez', role: 'CAJERO' },
-                        { email: 'caja@sigodental.com', documentNumber: '1700000006', firstName: 'Andrea', lastName: 'Solís', role: 'CAJERO' },
+                        { email: 'caja@sigodental.com', documentNumber: '1700000005', firstName: 'Andrea', lastName: 'Solís', role: 'CAJERO' },
+                        { email: 'cajero@sigodental.com', documentNumber: '1700000010', firstName: 'Juan Carlos', lastName: 'Pérez', role: 'CAJERO' },
                         { email: 'contador@sigodental.com', documentNumber: '1700000007', firstName: 'CPA. Marco', lastName: 'Silva', role: 'CONTADOR' },
                     ];
                     createdUsers = {};
