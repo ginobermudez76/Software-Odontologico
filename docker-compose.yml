@@ -1,12 +1,12 @@
-version: '3.8'
-
 networks:
   sigo-network:
     driver: bridge
 
 volumes:
   postgres_data:
+    name: sigo_postgres_data
   redis_data:
+    name: sigo_redis_data
   minio_data:
   clamav_definitions:
 
@@ -53,9 +53,11 @@ services:
 
   # 3. Almacenamiento Compatible con S3 (MinIO)
   sigo-storage:
-    image: minio/minio:latest
+    image: quay.io/minio/minio:RELEASE.2024-01-18T22-51-28Z
     container_name: sigo-storage
     restart: unless-stopped
+    profiles:
+      - storage
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio_admin}
