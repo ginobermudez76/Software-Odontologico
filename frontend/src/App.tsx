@@ -5,6 +5,7 @@ import { useAuthStore } from './stores/authStore';
 import { AppLayout } from './layouts/app-layout';
 import { LoginView } from './features/auth/login-view';
 import { DashboardView } from './features/dashboard/dashboard-view';
+import { PatientList } from './features/patients';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ export const App: React.FC = () => {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardView />} />
+            <Route path="patients" element={<PatientList />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

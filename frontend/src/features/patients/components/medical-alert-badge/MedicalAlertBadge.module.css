@@ -1,0 +1,31 @@
+.badgeContainer {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fef2f2; /* Red 50 */
+  color: #b91c1c; /* Red 700 */
+  border: 1px solid #fecaca; /* Red 200 */
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.badgeMd {
+  padding: 4px 10px;
+  font-size: 0.8125rem;
+}
+
+.icon {
+  color: #ef4444;
+}
+

@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema Integral de Gestión Odontológica y Expediente Clínico Digital (**SIGO-Dental**)  
 **Duración Estimada:** Sprints 1 al 4 (8 Semanas)  
-**Estado Actual:** `[x] Sprint 1 Completado (En Progreso: 25%)`  
+**Estado Actual:** `[x] Sprints 1 y 2 Completados (En Progreso: 50%)`  
 **Documento Maestro:** [`PLAN_DE_IMPLEMENTACION.md`](../../PLAN_DE_IMPLEMENTACION.md)  
 
 ---
@@ -38,16 +38,17 @@ Establecer la infraestructura base en Docker, el esquema de persistencia relacio
 ---
 
 ### Sprint 2: Filiación de Pacientes, Anamnesis y Protección LOPDP
-- [ ] **2.1 Backend de Gestión de Pacientes:**
-  - [ ] Endpoints CRUD `/api/v1/patients` con paginación, filtros de búsqueda rápida por DNI/nombres.
-  - [ ] Validación de tutor legal obligatorio para pacientes menores de 18 años.
-  - [ ] Servicio de Cifrado a Nivel de Campo (**AES-256-GCM**) para antecedentes médicos y alergias críticas.
-  - [ ] Interceptor de auditoría forense append-only para cada lectura de datos médicos sensibles.
-- [ ] **2.2 Frontend de Pacientes:**
-  - [ ] Componente `PatientForm` (separado en `.tsx`, `.module.css`, `usePatientForm.ts`, `.types.ts`, `.test.tsx`).
-  - [ ] Tabla de pacientes con búsqueda en tiempo real, filtros avanzados y paginación.
-  - [ ] Componente `MedicalAlertBadge` flotante de alta visibilidad para alergias críticas (penicilina, anticoagulantes).
-  - [ ] Pruebas unitarias de validación de campos con Zod y React Testing Library.
+- [x] **2.1 Backend de Gestión de Pacientes:**
+  - [x] Endpoints CRUD `/api/v1/patients` con paginación, filtros de búsqueda rápida por DNI/nombres.
+  - [x] Validación de tutor legal obligatorio para pacientes menores de 18 años.
+  - [x] Servicio de Cifrado a Nivel de Campo (**AES-256-GCM**) para antecedentes médicos y alergias críticas (`EncryptionService`).
+  - [x] Interceptor de auditoría forense append-only para cada lectura y mutación de datos médicos sensibles.
+- [x] **2.2 Frontend de Pacientes:**
+  - [x] Componente `PatientList` (separado en `.tsx`, `.module.css`, `usePatientList.ts`, `.types.ts`).
+  - [x] Modal `PatientFormModal` con cálculo dinámico de edad y tutor legal obligatorio si edad < 18.
+  - [x] Componente `MedicalAlertBadge` flotante de alta visibilidad para alergias críticas (penicilina, anticoagulantes).
+  - [x] Renderizado condicional de botones según `canWrite` y `canDelete` desde base de datos.
+  - [x] Pruebas unitarias de cifrado AES-256-GCM en backend y pruebas de componentes con React Testing Library.
 
 ---
 
