@@ -7,6 +7,7 @@ import { LoginView } from './features/auth/login-view';
 import { DashboardView } from './features/dashboard/dashboard-view';
 import { PatientList } from './features/patients';
 import { AppointmentsCalendar } from './features/appointments';
+import { PosCheckout, CashShiftManager } from './features/billing';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +45,8 @@ export const App: React.FC = () => {
             <Route path="dashboard" element={<DashboardView />} />
             <Route path="patients" element={<PatientList />} />
             <Route path="appointments" element={<AppointmentsCalendar />} />
+            <Route path="billing/pos" element={<PosCheckout />} />
+            <Route path="billing/cash-register" element={<CashShiftManager />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

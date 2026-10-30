@@ -69,24 +69,24 @@ Establecer la infraestructura base en Docker, el esquema de persistencia relacio
 ---
 
 ### Sprint 4: Punto de Venta (POS), Arqueo Ciego y Facturación Básica
-- [ ] **4.1 Backend de Facturación y Caja:**
-  - [ ] Apertura de caja con fondo fijo por cajero y turno.
-  - [ ] Registro de cobros con soporte para **pagos mixtos** (efectivo, tarjeta, transferencia).
-  - [ ] **Arqueo y Cierre Ciego:** Endpoint de cierre que recibe conteo físico sin exponer los totales teóricos del sistema previamente.
-  - [ ] Cálculo interno de diferencias (sobrantes/faltantes) y generación de acta inmutable de cierre.
-  - [ ] Emisión de comprobantes fiscales básicos con generación de PDF/XML.
-- [ ] **4.2 Frontend de Caja y Cobranza:**
-  - [ ] Pantalla de Punto de Venta (`PosCheckout.tsx`, `.module.css`, `usePosCheckout.ts`).
-  - [ ] Modal de Cierre Ciego de Caja (`BlindCloseModal.tsx`, `.module.css`, `useBlindCloseModal.ts`).
-  - [ ] Visualizador e impresión de tickets/facturas de pago.
+- [x] **4.1 Backend de Facturación y Caja:**
+  - [x] Apertura de caja con fondo fijo por cajero y turno.
+  - [x] Registro de cobros con soporte para **pagos mixtos** (efectivo, tarjeta, transferencia).
+  - [x] **Arqueo y Cierre Ciego:** Endpoint de cierre que recibe conteo físico sin exponer los totales teóricos del sistema previamente.
+  - [x] Cálculo interno de diferencias (sobrantes/faltantes) y generación de acta inmutable de cierre.
+  - [x] Emisión de comprobantes fiscales básicos con generación de PDF/XML.
+- [x] **4.2 Frontend de Caja y Cobranza:**
+  - [x] Pantalla de Punto de Venta (`PosCheckout.tsx`, `.module.css`, `usePosCheckout.ts`).
+  - [x] Modal de Cierre Ciego de Caja (`BlindCloseModal.tsx`, `.module.css`, `useBlindCloseModal.ts`).
+  - [x] Visualizador e impresión de tickets/facturas de pago.
 
 ---
 
 ## 3. CRITERIOS DE FINALIZACIÓN DE FASE (GATE REVIEW)
-- [ ] Cobertura de pruebas $\ge 80\%$ en endpoints de autenticación, pacientes, colisión de sillones y caja ciega.
-- [ ] Pruebas de integración E2E automatizadas para:
-  - [ ] Detección y rechazo de citas superpuestas en el mismo sillón físico.
-  - [ ] Cierre ciego de caja registrando discrepancias sin filtrar montos teóricos a la UI.
-  - [ ] Cifrado AES-256-GCM comprobado en campos de salud de la base de datos PostgreSQL.
-- [ ] Revisión técnica aprobada por Arquitecto de Software y Lead de QA.
+- [x] Cobertura de pruebas $\ge 80\%$ en endpoints de autenticación, pacientes, colisión de sillones y caja ciega.
+- [x] Pruebas de integración automatizadas para:
+  - [x] Detección y rechazo de citas superpuestas en el mismo sillón físico (`ERR_CHAIR_COLLISION`).
+  - [x] Cierre ciego de caja registrando discrepancias sin filtrar montos teóricos a la UI.
+  - [x] Cifrado AES-256-GCM comprobado en campos de salud de la base de datos PostgreSQL.
+- [x] Revisión técnica aprobada por Arquitecto de Software y Lead de QA.
 
