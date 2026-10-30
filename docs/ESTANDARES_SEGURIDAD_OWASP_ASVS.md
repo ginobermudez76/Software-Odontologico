@@ -88,3 +88,4 @@ El estándar **OWASP Application Security Verification Standard (ASVS) Nivel 2**
 ### V11: Comunicaciones Seguras
 - [ ] V11.1.1: Todo el tráfico HTTP es redirigido obligatoriamente a HTTPS mediante regla HSTS (`max-age=31536000`).
 - [ ] V11.1.2: Se deshabilitan protocolos antiguos e inseguros (SSL v2/v3, TLS 1.0, TLS 1.1).
+

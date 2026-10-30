@@ -461,9 +461,14 @@ Se implementa el paquete `@material-symbols/svg-react` o clases CSS `material-sy
 
 ---
 
-### 5.2 Estructura del Menú en Sidebar (Navegación Lateral por Roles)
+### 5.2 Estructura del Menú en Sidebar (Navegación Dinámica por Tablas en DB)
 
-El Sidebar es retráctil y filtra dinámicamente sus opciones según el token y permisos del usuario activo:
+**Regla Arquitectónica Inviolable:** Queda terminantemente prohibido hardcodear las opciones del menú lateral en el frontend. La navegación se renderiza dinámicamente consumiendo el árbol JSON retornado por `GET /api/v1/auth/my-navigation`, el cual se alimenta de las tablas relacionales:
+* `menu_options` (id UUID, parent_id UUID, codigo_opcion, titulo, ruta_frontend, icono_material, orden_posicion, is_deleted)
+* `role_menu_options` (rol_opcion: id UUID, role_id UUID, menu_option_id UUID, puede_leer, puede_escribir, is_deleted)
+* `menu_option_endpoints` (opcion_endpoint: vincula cada opción de pantalla con los endpoints autorizados en backend)
+
+El Sidebar itera reactivamente este catálogo sin tener rutas fijas en código:
 
 ```
 [ LOGO SIGO-DENTAL ]  Sede: Consultorio Central

@@ -7,6 +7,7 @@
 * [`PLAN_DE_IMPLEMENTACION.md`](./PLAN_DE_IMPLEMENTACION.md) (Plan de Implementación y Fases)
 * [`docs/ESPECIFICACION_PANTALLAS_UI_UX.md`](./docs/ESPECIFICACION_PANTALLAS_UI_UX.md) (Wireframes y Pantallas UI/UX)
 * [`docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md`](./docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md) (Estándares de Seguridad OWASP y ASVS Nivel 2)
+* [`docs/MODELO_DATOS_RBAC_DINAMICO_Y_ERRORES.md`](./docs/MODELO_DATOS_RBAC_DINAMICO_Y_ERRORES.md) (RBAC Dinámico, Partial Indexes y Errores RFC 7807)
 
 ---
 
@@ -16,8 +17,15 @@
    * El backend se desarrolla en **NestJS + TypeScript** con PostgreSQL 16 y Prisma ORM.
    * Los módulos de negocio (`Auth`, `Patients`, `ClinicalRecords`, `Appointments`, `Billing`, `Inventory`, `Audit`) deben ser autónomos y comunicarse únicamente mediante interfaces públicas o eventos desacoplados (`EventEmitter2`).
    * No crear dependencias circulares ni acoplamientos directos entre servicios de distintos dominios.
+   * **Identificadores Universales UUID v4:** Prohibido el uso de enteros secuenciales (`SERIAL`, `AUTO_INCREMENT`) para evitar enumeración IDOR.
+   * **Soft Delete y Partial Unique Indexes:** Todo borrado es lógico (`is_deleted`, `deleted_at`). Los campos que exijan unicidad (códigos, DNI, SKU, email) deben utilizar **Índices Parciales Únicos en PostgreSQL (`WHERE is_deleted = false`)**, permitiendo registrar un nuevo registro con el mismo código si el anterior fue borrado.
 
-2. **Frontend con Separación Estricta de Responsabilidades (SoC):**
+2. **Navegación Dinámica y RBAC sin Hardcoding:**
+   * Las opciones del menú Sidebar **nunca se hardcodean** en el frontend.
+   * La navegación se alimenta dinámicamente desde base de datos vinculando roles con opciones (`rol_opcion`) y opciones con rutas de endpoints (`opcion_endpoint`).
+   * Los guards de backend validan dinámicamente si el rol del usuario posee permiso sobre el endpoint invocado.
+
+3. **Frontend con Separación Estricta de Responsabilidades (SoC):**
    * El frontend se desarrolla en **React + Vite + TypeScript**.
    * **REGLA DE ORO DE ARCHIVOS:** Cada componente de UI o feature clínica debe estructurarse obligatoriamente en archivos especializados separados:
      * `[NombreComponente].tsx`: Marcado JSX y estructura visual limpia (HTML con accesibilidad).
@@ -70,6 +78,7 @@
    * **Anti-Inyección:** Prohibido el SQL crudo concatenado; utilizar exclusivamente Prisma ORM tipado.
    * **Rate Limiting:** Máximo 5 intentos fallidos de login antes de bloqueo temporal de 15 minutos en Redis.
    * **Seguridad HTTP:** Configuración obligatoria de cabeceras seguras con Helmet (CSP, HSTS, X-Content-Type-Options: nosniff).
+   * **Gestión Estandarizada de Errores (RFC 7807):** Todas las respuestas de error 40x y 50x deben seguir el formato Problem Details con `type`, `title`, `status`, `detail`, `errorCode`, `timestamp` y `traceId`. En errores 500 se sanitiza completamente la traza técnica interna al cliente. Redirecciones y caché 30x con `ETag` para activos estáticos.
 
 ---
 
