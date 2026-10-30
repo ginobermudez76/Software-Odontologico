@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './LoginView.module.css';
-import { LoginViewProps } from './LoginView.types';
+import { LoginViewProps, DEMO_ACCOUNTS } from './LoginView.types';
 import { useLoginView } from './useLoginView';
 import { MaterialIcon } from '../../../components/icons/MaterialIcon';
 
@@ -13,6 +13,7 @@ export const LoginView: React.FC<LoginViewProps> = () => {
     isLoading,
     errorMessage,
     handleSubmit,
+    selectDemoAccount,
   } = useLoginView();
 
   return (
@@ -84,6 +85,30 @@ export const LoginView: React.FC<LoginViewProps> = () => {
             )}
           </button>
         </form>
+
+        <div className={styles.demoBox}>
+          <div className={styles.demoTitle}>Cuentas de prueba:</div>
+          <div className={styles.demoList}>
+            {DEMO_ACCOUNTS.map((account) => (
+              <div key={account.email} className={styles.demoItem}>
+                <div className={styles.demoAccountInfo}>
+                  <MaterialIcon name={account.icon} size={18} color={account.iconColor} />
+                  <span>
+                    <span className={styles.demoRoleLabel}>{account.label}:</span>{' '}
+                    <span className={styles.demoCredentials}>{account.email} / {account.password}</span>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => selectDemoAccount(account.email, account.password)}
+                  className={styles.demoUseButton}
+                >
+                  Usar
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="mt-6 pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
           <span className="flex items-center gap-1">

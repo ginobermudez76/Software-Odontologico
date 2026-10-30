@@ -12,6 +12,12 @@ export function useLoginView() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const selectDemoAccount = (demoEmail: string, demoPassword: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setErrorMessage(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -47,6 +53,7 @@ export function useLoginView() {
     isLoading,
     errorMessage,
     handleSubmit,
+    selectDemoAccount,
   };
 }
 

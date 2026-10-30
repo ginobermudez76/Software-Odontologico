@@ -121,3 +121,71 @@
   gap: 8px;
 }
 
+.demoBox {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.demoTitle {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.demoList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: #475569;
+}
+
+.demoAccountInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.demoRoleLabel {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.demoCredentials {
+  color: #64748b;
+  font-family: monospace;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.demoUseButton {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+}
+
+.demoUseButton:hover {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
