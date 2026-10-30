@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema Integral de Gestión Odontológica y Expediente Clínico Digital (**SIGO-Dental**)  
 **Duración Estimada:** Sprints 9 al 11 (6 Semanas)  
-**Estado Actual:** `[x] En Progreso (Sprint 9 Completado y Verificado; Procediendo a Sprint 10)`  
+**Estado Actual:** `[x] En Progreso (Sprint 9 y Sprint 10 Completados y Verificados; Procediendo a Sprint 11)`  
 **Documento Maestro:** [`PLAN_DE_IMPLEMENTACION.md`](../../PLAN_DE_IMPLEMENTACION.md)  
 
 ---
@@ -30,17 +30,16 @@ Automatizar el control logístico y financiero de la clínica: vinculación de r
 ---
 
 ### Sprint 10: Presupuestos Multinivel y Liquidación de Honorarios Médicos
-- [ ] **10.1 Presupuestos Odontológicos Multinivel:**
-  - [ ] Creación de planes de tratamiento estructurados por fases clínicas (Fase 1: Higiene, Fase 2: Operatorias, Fase 3: Rehabilitación).
-  - [ ] Soporte para presupuestos alternativos (Plan Ideal vs. Plan Económico).
-  - [ ] Control de validez de 30 días calendario conforme a **Regla RN-04**.
-  - [ ] Flujo de aprobación del paciente y botón de conversión directa de ítems aprobados en citas de agenda.
-- [ ] **10.2 Motor de Liquidación de Comisiones y Honorarios:**
-  - [ ] Motor de reglas de cálculo parametrizables por profesional:
-    - [ ] Porcentaje fijo sobre lo recaudado neto.
-    - [ ] Monto fijo por procedimiento.
-    - [ ] **Regla RN-07:** Deducción previa del costo de laboratorio dental externo antes de calcular el porcentaje del odontólogo.
-  - [ ] Generación de pre-liquidaciones quincenales/mensuales descargables en PDF/Excel.
+- [x] **10.1 Presupuestos Odontológicos Multinivel:**
+  - [x] Creación de planes de tratamiento estructurados por fases clínicas (Fase 1: Higiene, Fase 2: Operatorias, Fase 3: Rehabilitación).
+  - [x] Soporte para presupuestos alternativos (Plan Ideal vs. Plan Económico).
+  - [x] Control estricto de validez de 30 días calendario conforme a **Regla RN-04** (`ERR_TREATMENT_PLAN_EXPIRED`).
+  - [x] Flujo de aprobación del paciente y botón de conversión directa de ítems aprobados en citas de agenda (`convertItemToAppointment`).
+- [x] **10.2 Motor de Liquidación de Comisiones y Honorarios:**
+  - [x] Motor de reglas de cálculo parametrizables por profesional (`PERCENTAGE_NET` y `FIXED_AMOUNT`).
+  - [x] **Regla RN-07:** Deducción previa obligatoria del costo de laboratorio dental externo antes de calcular el porcentaje del odontólogo.
+  - [x] Generación y persistencia de liquidaciones periódicas con histórico y marcado de estado (`PAGADO`).
+  - [x] Interfaz de usuario desacoplada (`TreatmentPlanBuilder`, `DoctorSettlementManager`, `TreatmentPlansCommissionsView`) con control RBAC de botones de acción.
 
 ---
 

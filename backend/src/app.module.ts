@@ -10,6 +10,7 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { BillingModule } from './modules/billing/billing.module';
 import { ClinicalRecordsModule } from './modules/clinical-records/clinical-records.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { TreatmentPlansCommissionsModule } from './modules/treatment-plans-commissions/treatment-plans-commissions.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { InventoryModule } from './modules/inventory/inventory.module';
     BillingModule,
     ClinicalRecordsModule,
     InventoryModule,
+    TreatmentPlansCommissionsModule,
   ],
 })
 export class AppModule {}

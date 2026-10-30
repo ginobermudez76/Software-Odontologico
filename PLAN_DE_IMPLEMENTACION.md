@@ -57,9 +57,9 @@ flowchart LR
 ### Hito 3: Logística y Finanzas Clínicas Automatizadas
 - [x] Descargo atómico de insumos por sillón/consultorio al marcar procedimientos como atendidos (Sprint 9 - Regla RN-06).
 - [x] Control de insumos por número de lote y fecha de caducidad con alertas preventivas FEFO (Sprint 9).
-- [ ] Motor de liquidación de comisiones con deducción previa de costos de laboratorio externo.
-- [ ] Presupuestos multinivel por fases clínicas con validez de 30 días y conversión a citas.
-- [ ] Tablero de mando directivo con indicadores clínicos y financieros en tiempo real.
+- [x] Motor de liquidación de comisiones con deducción previa de costos de laboratorio externo (Sprint 10 - Regla RN-07).
+- [x] Presupuestos multinivel por fases clínicas con validez de 30 días y conversión a citas (Sprint 10 - Regla RN-04).
+- [ ] Tablero de mando directivo con indicadores clínicos y financieros en tiempo real (Sprint 11).
 
 ### Hito 4: Certificación de Seguridad y Puesta en Producción
 - [ ] Pruebas de aceptación UAT aprobadas por el personal médico y administrativo.

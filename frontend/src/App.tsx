@@ -16,6 +16,7 @@ import {
   PrescriptionManager,
 } from './features/clinical-records';
 import { InventoryView } from './features/inventory';
+import { TreatmentPlansCommissionsView } from './features/treatment-plans-commissions';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +62,8 @@ export const App: React.FC = () => {
             <Route path="consents" element={<ConsentManager />} />
             <Route path="prescriptions" element={<PrescriptionManager />} />
             <Route path="inventory" element={<InventoryView />} />
+            <Route path="treatment-plans" element={<TreatmentPlansCommissionsView initialTab="plans" />} />
+            <Route path="commissions" element={<TreatmentPlansCommissionsView initialTab="settlements" />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

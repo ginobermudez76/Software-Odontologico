@@ -95,6 +95,9 @@ model User {
   doctorAppointments   Appointment[]   @relation("DoctorAppointments")
   doctorEvolutionNotes EvolutionNote[] @relation("DoctorEvolutionNotes")
   doctorPrescriptions  Prescription[]  @relation("DoctorPrescriptions")
+  doctorTreatmentPlans TreatmentPlan[] @relation("DoctorTreatmentPlans")
+  commissionRules      DoctorCommissionRule[]
+  commissionSettlements DoctorCommissionSettlement[]
   cashShifts           CashShift[]     @relation("CashierShifts")
   invoices             Invoice[]     @relation("CashierInvoices")
   auditLogs            AuditLog[]
@@ -198,6 +201,7 @@ model Patient {
   clinicalRecord ClinicalRecord?
   appointments   Appointment[]
   invoices       Invoice[]
+  treatmentPlans TreatmentPlan[]
 
   @@map("patients")
 }
@@ -315,6 +319,8 @@ model Appointment {
   chair   DentalChair @relation(fields: [chairId], references: [id])
   invoices Invoice[]
   discharges InventoryDischarge[]
+  treatmentPlanItems TreatmentPlanItem[]
+  settlementItems    DoctorSettlementItem[]
 
   @@map("appointments")
 }
@@ -366,6 +372,7 @@ model Invoice {
   patient        Patient         @relation(fields: [patientId], references: [id])
   cashier        User            @relation("CashierInvoices", fields: [cashierId], references: [id])
   paymentDetails PaymentDetail[]
+  settlementItems DoctorSettlementItem[]
 
   @@map("invoices")
 }
@@ -426,6 +433,9 @@ model ProcedureCatalog {
 
   recipes             ProcedureRecipe[]
   discharges          InventoryDischarge[]
+  planItems           TreatmentPlanItem[]
+  commissionRules     DoctorCommissionRule[]
+  settlementItems     DoctorSettlementItem[]
 
   @@map("procedure_catalog")
 }
@@ -502,3 +512,133 @@ model InventoryDischarge {
 }
 
 
+
+// ==========================================
+// 6. SUBDOMINIO: PRESUPUESTOS MULTINIVEL Y COMISIONES (SPRINT 10)
+// ==========================================
+
+model TreatmentPlan {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId       String    @map("patient_id") @db.Uuid
+  doctorId        String    @map("doctor_id") @db.Uuid
+  planCode        String    @unique @map("plan_code") @db.VarChar(50)
+  title           String    @db.VarChar(150)
+  description     String?   @db.Text
+  status          String    @default("BORRADOR") @db.VarChar(30) // BORRADOR, EMITIDO, APROBADO, RECHAZADO, VENCIDO
+  isAlternative   Boolean   @default(false) @map("is_alternative")
+  totalAmount     Decimal   @default(0) @map("total_amount") @db.Decimal(12, 2)
+  issuedAt        DateTime  @default(now()) @map("issued_at") @db.Timestamptz
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz // RN-04: Validez de 30 días calendario
+  approvedAt      DateTime? @map("approved_at") @db.Timestamptz
+  rejectionReason String?   @map("rejection_reason") @db.VarChar(255)
+  isDeleted       Boolean   @default(false) @map("is_deleted")
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  patient         Patient              @relation(fields: [patientId], references: [id])
+  doctor          User                 @relation("DoctorTreatmentPlans", fields: [doctorId], references: [id])
+  phases          TreatmentPlanPhase[]
+
+  @@map("treatment_plans")
+}
+
+model TreatmentPlanPhase {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  planId      String   @map("plan_id") @db.Uuid
+  phaseNumber Int      @map("phase_number") // 1: Higiene, 2: Operatorias, 3: Rehabilitación
+  name        String   @db.VarChar(100)
+  status      String   @default("PENDIENTE") @db.VarChar(30) // PENDIENTE, EN_PROCESO, COMPLETADA
+  orderIndex  Int      @default(1) @map("order_index")
+  subtotal    Decimal  @default(0) @db.Decimal(12, 2)
+
+  plan        TreatmentPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
+  items       TreatmentPlanItem[]
+
+  @@map("treatment_plan_phases")
+}
+
+model TreatmentPlanItem {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  phaseId         String   @map("phase_id") @db.Uuid
+  procedureId     String   @map("procedure_id") @db.Uuid
+  toothNumber     Int?     @map("tooth_number")
+  surface         String?  @db.VarChar(20)
+  quantity        Int      @default(1)
+  unitPrice       Decimal  @map("unit_price") @db.Decimal(10, 2)
+  discountPercent Decimal  @default(0) @map("discount_percent") @db.Decimal(5, 2)
+  labCost         Decimal  @default(0) @map("lab_cost") @db.Decimal(10, 2)
+  finalPrice      Decimal  @map("final_price") @db.Decimal(10, 2)
+  status          String   @default("PENDIENTE") @db.VarChar(30) // PENDIENTE, APROBADO, AGENDADO, COMPLETADO, CANCELADO
+  appointmentId   String?  @map("appointment_id") @db.Uuid
+  orderIndex      Int      @default(1) @map("order_index")
+
+  phase           TreatmentPlanPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  procedure       ProcedureCatalog   @relation(fields: [procedureId], references: [id])
+  appointment     Appointment?       @relation(fields: [appointmentId], references: [id])
+
+  @@map("treatment_plan_items")
+}
+
+model DoctorCommissionRule {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  doctorId    String   @map("doctor_id") @db.Uuid
+  procedureId String?  @map("procedure_id") @db.Uuid
+  ruleType    String   @default("PERCENTAGE_NET") @map("rule_type") @db.VarChar(30) // PERCENTAGE_NET, FIXED_AMOUNT
+  percentage  Decimal? @db.Decimal(5, 2)
+  fixedAmount Decimal? @map("fixed_amount") @db.Decimal(10, 2)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  doctor      User              @relation(fields: [doctorId], references: [id])
+  procedure   ProcedureCatalog? @relation(fields: [procedureId], references: [id])
+
+  @@map("doctor_commission_rules")
+}
+
+model DoctorCommissionSettlement {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  settlementCode       String    @unique @map("settlement_code") @db.VarChar(50)
+  doctorId             String    @map("doctor_id") @db.Uuid
+  periodStart          DateTime  @map("period_start") @db.Date
+  periodEnd            DateTime  @map("period_end") @db.Date
+  totalProceduresCount Int       @default(0) @map("total_procedures_count")
+  grossAmount          Decimal   @default(0) @map("gross_amount") @db.Decimal(12, 2)
+  totalLabCosts        Decimal   @default(0) @map("total_lab_costs") @db.Decimal(12, 2) // RN-07: Deducción previa obligatoria
+  netCommissionableBase Decimal  @default(0) @map("net_commissionable_base") @db.Decimal(12, 2)
+  netCommissionPaid    Decimal   @default(0) @map("net_commission_paid") @db.Decimal(12, 2)
+  status               String    @default("PENDIENTE") @db.VarChar(30) // PENDIENTE, APROBADO, PAGADO, ANULADO
+  paidAt               DateTime? @map("paid_at") @db.Timestamptz
+  notes                String?   @db.VarChar(255)
+  isDeleted            Boolean   @default(false) @map("is_deleted")
+  deletedAt            DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  doctor               User                   @relation(fields: [doctorId], references: [id])
+  items                DoctorSettlementItem[]
+
+  @@map("doctor_commission_settlements")
+}
+
+model DoctorSettlementItem {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  settlementId       String   @map("settlement_id") @db.Uuid
+  appointmentId      String?  @map("appointment_id") @db.Uuid
+  procedureId        String   @map("procedure_id") @db.Uuid
+  invoiceId          String?  @map("invoice_id") @db.Uuid
+  procedurePrice     Decimal  @map("procedure_price") @db.Decimal(10, 2)
+  labCost            Decimal  @default(0) @map("lab_cost") @db.Decimal(10, 2) // RN-07: Costo deducido de lab
+  commissionableBase Decimal  @map("commissionable_base") @db.Decimal(10, 2)
+  commissionRate     Decimal  @map("commission_rate") @db.Decimal(5, 2)
+  doctorEarning      Decimal  @map("doctor_earning") @db.Decimal(10, 2)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  settlement         DoctorCommissionSettlement @relation(fields: [settlementId], references: [id], onDelete: Cascade)
+  appointment        Appointment?               @relation(fields: [appointmentId], references: [id])
+  procedure          ProcedureCatalog           @relation(fields: [procedureId], references: [id])
+  invoice            Invoice?                   @relation(fields: [invoiceId], references: [id])
+
+  @@map("doctor_settlement_items")
+}
