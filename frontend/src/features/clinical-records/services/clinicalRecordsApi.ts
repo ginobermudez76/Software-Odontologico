@@ -8,6 +8,14 @@ import {
   PeriodontogramResponse,
   PeriodontalTooth,
 } from '../types/periodontogram.types';
+import {
+  EvolutionNotesResponse,
+  EvolutionNote,
+  CreateEvolutionNotePayload,
+  UpdateEvolutionNotePayload,
+  CreateAdendaPayload,
+  NoteAdenda,
+} from '../types/evolution-note.types';
 
 export const clinicalRecordsApi = {
   async getOdontogram(patientId: string): Promise<OdontogramResponse> {
@@ -45,5 +53,35 @@ export const clinicalRecordsApi = {
     });
     return res.data;
   },
+
+  async getEvolutionNotes(patientId: string): Promise<EvolutionNotesResponse> {
+    const res = await apiClient.get(`/api/v1/clinical-records/${patientId}/notes`);
+    return res.data;
+  },
+
+  async createEvolutionNote(
+    patientId: string,
+    payload: CreateEvolutionNotePayload,
+  ): Promise<EvolutionNote> {
+    const res = await apiClient.post(`/api/v1/clinical-records/${patientId}/notes`, payload);
+    return res.data;
+  },
+
+  async updateEvolutionNote(
+    noteId: string,
+    payload: UpdateEvolutionNotePayload,
+  ): Promise<EvolutionNote> {
+    const res = await apiClient.put(`/api/v1/clinical-records/notes/${noteId}`, payload);
+    return res.data;
+  },
+
+  async createAdenda(
+    noteId: string,
+    payload: CreateAdendaPayload,
+  ): Promise<NoteAdenda> {
+    const res = await apiClient.post(`/api/v1/clinical-records/notes/${noteId}/adendas`, payload);
+    return res.data;
+  },
 };
+
 

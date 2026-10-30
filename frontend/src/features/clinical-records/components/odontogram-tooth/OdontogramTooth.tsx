@@ -181,3 +181,4 @@ export const OdontogramTooth: React.FC<OdontogramToothProps> = ({
     </div>
   );
 };
+

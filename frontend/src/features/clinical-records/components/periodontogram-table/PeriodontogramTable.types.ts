@@ -7,3 +7,4 @@ export interface PeriodontogramTableProps {
 
 export type PeriodontalArch = 'MAXILLARY' | 'MANDIBULAR';
 export type PeriodontalAspect = 'VESTIBULAR' | 'LINGUAL';
+

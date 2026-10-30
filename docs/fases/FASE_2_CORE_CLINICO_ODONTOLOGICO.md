@@ -49,14 +49,14 @@ Desarrollar el núcleo médico-odontológico de la plataforma: odontograma vecto
 ---
 
 ### Sprint 7: Notas de Evolución SOEP e Inmutabilidad Médica
-- [ ] **7.1 Backend de Evolución SOEP:**
-  - [ ] Registro estructurado de notas con campos: Subjetivo, Objetivo, Evaluación (CIE-10 odontológico) y Plan.
-  - [ ] **Regla de Inmutabilidad RN-01:** Bloqueo automático de edición transcurridas 24 horas desde la creación.
-  - [ ] Módulo de **Notas de Adenda / Aclaratorias**: Vinculación formal a la nota original sin modificar su contenido histórico.
-- [ ] **7.2 Componente `SoepEditor` (Frontend):**
-  - [ ] `SoepEditor.tsx`, `SoepEditor.module.css`, `useSoepEditor.ts`, `SoepEditor.types.ts`, `SoepEditor.test.tsx`.
-  - [ ] Indicador de estado de la nota (Editable / Bloqueada por tiempo).
-  - [ ] Modal para emisión de adendas con firma del profesional tratante.
+- [x] **7.1 Backend de Evolución SOEP:**
+  - [x] Registro estructurado de notas con campos: Subjetivo, Objetivo, Evaluación (CIE-10 odontológico) y Plan.
+  - [x] **Regla de Inmutabilidad RN-01:** Bloqueo automático de edición transcurridas 24 horas desde la creación.
+  - [x] Módulo de **Notas de Adenda / Aclaratorias**: Vinculación formal a la nota original sin modificar su contenido histórico.
+- [x] **7.2 Componente `SoepEditor` (Frontend):**
+  - [x] `SoepEditor.tsx`, `SoepEditor.module.css`, `useSoepEditor.ts`, `SoepEditor.types.ts`, `SoepEditor.test.tsx`.
+  - [x] Indicador de estado de la nota (Editable / Bloqueada por tiempo).
+  - [x] Modal para emisión de adendas con firma del profesional tratante.
 
 ---
 

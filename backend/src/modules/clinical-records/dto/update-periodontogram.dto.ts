@@ -144,3 +144,4 @@ export class UpdatePeriodontogramDto {
   @Type(() => PeriodontogramSummaryDto)
   summary?: PeriodontogramSummaryDto;
 }
+

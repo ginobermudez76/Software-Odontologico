@@ -242,8 +242,10 @@ model EvolutionNote {
   createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz
 
-  clinicalRecord   ClinicalRecord @relation(fields: [clinicalRecordId], references: [id])
-  doctor           User           @relation("DoctorEvolutionNotes", fields: [doctorId], references: [id])
+  clinicalRecord   ClinicalRecord  @relation(fields: [clinicalRecordId], references: [id])
+  doctor           User            @relation("DoctorEvolutionNotes", fields: [doctorId], references: [id])
+  originalNote     EvolutionNote?  @relation("NoteAdendas", fields: [originalNoteId], references: [id])
+  adendas          EvolutionNote[] @relation("NoteAdendas")
 
   @@map("evolution_notes")
 }

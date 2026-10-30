@@ -6,3 +6,4 @@ export interface OdontogramPaletteProps {
   applyMode: 'SURFACE' | 'TOOTH';
   onToggleApplyMode: (mode: 'SURFACE' | 'TOOTH') => void;
 }
+

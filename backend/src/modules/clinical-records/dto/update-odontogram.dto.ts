@@ -97,3 +97,4 @@ export class UpdateOdontogramDto {
   @IsString()
   generalNotes?: string;
 }
+

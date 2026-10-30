@@ -17,3 +17,15 @@ gcloud compute ssh --zone "us-central1-a" "software-odontologico" --project "fra
 
 ### Opción 2: Conexión directa mediante OpenSSH
 ssh -i "C:\Users\Gino\.ssh\google_compute_engine" gino@35.254.34.194
+
+---
+
+## Configuración de Dominio y DNS (Namecheap):
+- **Dominio Principal:** `eldominiodedesarrollo.me`
+- **Registrador:** Namecheap
+- **Registros DNS a apuntar en Namecheap:**
+  - **Tipo A:** Host `@` -> IP `35.254.34.194` (TTL: Automático / 1 min)
+  - **Tipo A:** Host `api` -> IP `35.254.34.194` (Backend NestJS / Swagger)
+  - **Tipo CNAME:** Host `www` -> Valor `eldominiodedesarrollo.me`
+- **Certificados SSL:** Let's Encrypt / Certbot con renovación automática por Nginx.
+

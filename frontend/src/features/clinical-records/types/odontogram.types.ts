@@ -69,3 +69,4 @@ export const QUADRANT_5_TEMPORARY = [55, 54, 53, 52, 51]; // Superior Derecho In
 export const QUADRANT_6_TEMPORARY = [61, 62, 63, 64, 65]; // Superior Izquierdo Infantil
 export const QUADRANT_8_TEMPORARY = [85, 84, 83, 82, 81]; // Inferior Derecho Infantil
 export const QUADRANT_7_TEMPORARY = [71, 72, 73, 74, 75]; // Inferior Izquierdo Infantil
+

@@ -400,3 +400,4 @@ export const Odontogram2D: React.FC<Odontogram2DProps> = ({ initialPatientId }) 
     </div>
   );
 };
+

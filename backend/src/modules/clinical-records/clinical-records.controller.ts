@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  Post,
   Put,
   Req,
   UseGuards,
@@ -14,6 +15,11 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { ClinicalRecordsService } from './clinical-records.service';
 import { UpdateOdontogramDto } from './dto/update-odontogram.dto';
 import { UpdatePeriodontogramDto } from './dto/update-periodontogram.dto';
+import {
+  CreateEvolutionNoteDto,
+  UpdateEvolutionNoteDto,
+  CreateAdendaDto,
+} from './dto/evolution-note.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Expediente Clínico & Odontograma')
@@ -64,5 +70,57 @@ export class ClinicalRecordsController {
   ) {
     return this.clinicalRecordsService.updatePeriodontogram(patientId, dto, req.user?.id);
   }
+
+  // ==========================================
+  // SPRINT 7: NOTAS SOEP & ADENDAS
+  // ==========================================
+
+  @Get(':patientId/notes')
+  @ApiOperation({ summary: 'Listar notas de evolución clínica SOEP del paciente' })
+  @ApiResponse({ status: 200, description: 'Notas clínicas obtenidas' })
+  @ApiResponse({ status: 404, description: 'Expediente no encontrado' })
+  async getEvolutionNotes(@Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string) {
+    return this.clinicalRecordsService.getEvolutionNotes(patientId);
+  }
+
+  @Post(':patientId/notes')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Registrar nueva nota de evolución médica SOEP' })
+  @ApiResponse({ status: 201, description: 'Nota clínica creada exitosamente' })
+  async createEvolutionNote(
+    @Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string,
+    @Body() dto: CreateEvolutionNoteDto,
+    @Req() req: any,
+  ) {
+    return this.clinicalRecordsService.createEvolutionNote(patientId, dto, req.user?.id);
+  }
+
+  @Put('notes/:noteId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Editar nota SOEP dentro de las 24 horas de gracia' })
+  @ApiResponse({ status: 200, description: 'Nota clínica actualizada' })
+  @ApiResponse({ status: 403, description: 'Rechazo: Más de 24 horas transcurridas (Inmutabilidad)' })
+  @ApiResponse({ status: 404, description: 'Nota no encontrada' })
+  async updateEvolutionNote(
+    @Param('noteId', new ParseUUIDPipe({ version: '4' })) noteId: string,
+    @Body() dto: UpdateEvolutionNoteDto,
+    @Req() req: any,
+  ) {
+    return this.clinicalRecordsService.updateEvolutionNote(noteId, dto, req.user?.id);
+  }
+
+  @Post('notes/:noteId/adendas')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Emitir Nota de Adenda / Aclaratoria formal sobre una nota existente' })
+  @ApiResponse({ status: 201, description: 'Adenda médica creada y vinculada legalmente' })
+  @ApiResponse({ status: 404, description: 'Nota original no encontrada' })
+  async createAdenda(
+    @Param('noteId', new ParseUUIDPipe({ version: '4' })) noteId: string,
+    @Body() dto: CreateAdendaDto,
+    @Req() req: any,
+  ) {
+    return this.clinicalRecordsService.createAdenda(noteId, dto, req.user?.id);
+  }
 }
+
 

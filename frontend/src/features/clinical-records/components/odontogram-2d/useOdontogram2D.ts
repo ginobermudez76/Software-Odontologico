@@ -206,3 +206,4 @@ export const useOdontogram2D = (initialPatientId?: string) => {
     handleSaveOdontogram,
   };
 };
+

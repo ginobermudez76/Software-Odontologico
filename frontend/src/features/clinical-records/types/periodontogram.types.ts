@@ -88,3 +88,4 @@ export const createDefaultTooth = (num: number): PeriodontalTooth => ({
     mesial: { probingDepth: 2, gingivalMargin: 0, clinicalAttachmentLevel: 2, bleeding: false, suppuration: false, plaque: false },
   },
 });
+

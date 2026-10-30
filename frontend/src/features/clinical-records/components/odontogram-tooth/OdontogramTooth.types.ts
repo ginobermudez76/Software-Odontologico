@@ -10,3 +10,4 @@ export interface OdontogramToothProps {
   onSelectTooth?: (fdiNumber: number) => void;
   onSurfaceClick?: (fdiNumber: number, surface: ToothSurface) => void;
 }
+

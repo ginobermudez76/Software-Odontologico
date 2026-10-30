@@ -51,7 +51,7 @@ flowchart LR
 - [x] Odontograma vectorial 2D interactivo con soporte de nomenclaturas FDI y Universal.
 - [x] Marcado anatómico de 5 superficies por pieza dental con histórico inicial vs. evolutivo.
 - [x] Periodontograma digital automatizado con cálculo en tiempo real de NIC ($PS + MG$).
-- [ ] Notas de evolución clínica bajo formato SOEP bloqueadas contra edición tras 24 horas.
+- [x] Notas de evolución clínica bajo formato SOEP bloqueadas contra edición tras 24 horas.
 - [ ] Consentimientos informados con firma biométrica en pantalla y recetas con código QR.
 
 ### Hito 3: Logística y Finanzas Clínicas Automatizadas

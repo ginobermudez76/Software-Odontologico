@@ -8,7 +8,7 @@ import { DashboardView } from './features/dashboard/dashboard-view';
 import { PatientList } from './features/patients';
 import { AppointmentsCalendar } from './features/appointments';
 import { PosCheckout, CashShiftManager } from './features/billing';
-import { Odontogram2D, PeriodontogramTable } from './features/clinical-records';
+import { Odontogram2D, PeriodontogramTable, SoepEditor } from './features/clinical-records';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +50,7 @@ export const App: React.FC = () => {
             <Route path="billing/cash-register" element={<CashShiftManager />} />
             <Route path="clinical-records" element={<Odontogram2D />} />
             <Route path="periodontogram" element={<PeriodontogramTable />} />
+            <Route path="soep-notes" element={<SoepEditor />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

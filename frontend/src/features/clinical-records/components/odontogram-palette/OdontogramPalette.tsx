@@ -82,3 +82,4 @@ export const OdontogramPalette: React.FC<OdontogramPaletteProps> = ({
     </div>
   );
 };
+

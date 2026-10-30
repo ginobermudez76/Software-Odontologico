@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ClinicalRecordsService } from './clinical-records.service';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('ClinicalRecordsService', () => {
   let service: ClinicalRecordsService;
@@ -11,6 +11,12 @@ describe('ClinicalRecordsService', () => {
     mockPrisma = {
       clinicalRecord: {
         findUnique: vi.fn(),
+        update: vi.fn(),
+      },
+      evolutionNote: {
+        findMany: vi.fn(),
+        findUnique: vi.fn(),
+        create: vi.fn(),
         update: vi.fn(),
       },
       auditLog: {
@@ -198,4 +204,156 @@ describe('ClinicalRecordsService', () => {
       );
     });
   });
+
+  describe('Notas de Evolución SOEP & Regla Inviolable de 24 Horas', () => {
+    it('debe crear una nueva nota clínica SOEP con cálculo de 24 horas de edición restante', async () => {
+      mockPrisma.clinicalRecord.findUnique.mockResolvedValueOnce({
+        id: 'cr-1',
+        isDeleted: false,
+      });
+
+      const noteMock = {
+        id: 'note-1',
+        clinicalRecordId: 'cr-1',
+        doctorId: 'doc-1',
+        subjective: 'Dolor en cuadrante 1 ante frío',
+        objective: 'Cavitación en pieza 16',
+        assessment: 'K04.0 Pulpitis reversible',
+        plan: 'Aislamiento, remoción de caries y base cavitaria',
+        isLocked: false,
+        isAdenda: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        doctor: { id: 'doc-1', firstName: 'Mario', lastName: 'Salas', email: 'doc@sigo.test' },
+      };
+
+      mockPrisma.evolutionNote.create.mockResolvedValueOnce(noteMock);
+
+      const result = await service.createEvolutionNote(
+        'p-1',
+        {
+          subjective: noteMock.subjective,
+          objective: noteMock.objective,
+          assessment: noteMock.assessment,
+          plan: noteMock.plan,
+        },
+        'doc-1',
+      );
+
+      expect(result.id).toBe('note-1');
+      expect(result.isEditable).toBe(true);
+      expect(result.remainingHoursToEdit).toBe(24);
+      expect(mockPrisma.auditLog.create).toHaveBeenCalled();
+    });
+
+    it('debe permitir la edición de la nota SOEP si han pasado MENOS de 24 horas', async () => {
+      // Nota creada hace 2 horas
+      const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+
+      mockPrisma.evolutionNote.findUnique.mockResolvedValueOnce({
+        id: 'note-1',
+        isLocked: false,
+        isDeleted: false,
+        createdAt: twoHoursAgo,
+      });
+
+      mockPrisma.evolutionNote.update.mockResolvedValueOnce({
+        id: 'note-1',
+        subjective: 'Dolor mitigado',
+        objective: 'Pieza 16 restaurada',
+        assessment: 'K04.0 Pulpitis en resolución',
+        plan: 'Control en 15 días',
+        createdAt: twoHoursAgo,
+        doctor: { id: 'doc-1', firstName: 'Mario', lastName: 'Salas' },
+      });
+
+      const result = await service.updateEvolutionNote(
+        'note-1',
+        {
+          subjective: 'Dolor mitigado',
+          objective: 'Pieza 16 restaurada',
+          assessment: 'K04.0 Pulpitis en resolución',
+          plan: 'Control en 15 días',
+        },
+        'doc-1',
+      );
+
+      expect(result.isEditable).toBe(true);
+      expect(result.remainingHoursToEdit).toBeCloseTo(22, 0);
+      expect(mockPrisma.evolutionNote.update).toHaveBeenCalled();
+    });
+
+    it('REGLA INVIOLABLE RN-01: debe lanzar ForbiddenException (HTTP 403) si han pasado MÁS de 24 horas', async () => {
+      // Nota creada hace 25 horas
+      const twentyFiveHoursAgo = new Date(Date.now() - 25 * 60 * 60 * 1000);
+
+      mockPrisma.evolutionNote.findUnique.mockResolvedValueOnce({
+        id: 'note-locked',
+        isLocked: false,
+        isDeleted: false,
+        createdAt: twentyFiveHoursAgo,
+      });
+
+      await expect(
+        service.updateEvolutionNote(
+          'note-locked',
+          {
+            subjective: 'Intento de modificar nota antigua',
+            objective: 'Test',
+            assessment: 'Test',
+            plan: 'Test',
+          },
+          'doc-1',
+        ),
+      ).rejects.toThrow(ForbiddenException);
+
+      expect(mockPrisma.evolutionNote.update).not.toHaveBeenCalled();
+    });
+
+    it('debe crear una Nota de Adenda / Aclaratoria vinculada a la nota histórica inmutable', async () => {
+      const originalNoteMock = {
+        id: 'note-orig-1',
+        clinicalRecordId: 'cr-1',
+        createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000), // 48 horas atrás
+        isDeleted: false,
+      };
+
+      mockPrisma.evolutionNote.findUnique.mockResolvedValueOnce(originalNoteMock);
+
+      const adendaMock = {
+        id: 'adenda-1',
+        originalNoteId: 'note-orig-1',
+        doctorId: 'doc-1',
+        assessment: 'Aclaratoria sobre prueba pulpar complementaria con respuesta adecuada.',
+        subjective: 'ADENDA MÉDICA: Aclaración de diagnóstico',
+        createdAt: new Date(),
+        doctor: { id: 'doc-1', firstName: 'Mario', lastName: 'Salas' },
+      };
+
+      mockPrisma.evolutionNote.create.mockResolvedValueOnce(adendaMock);
+
+      const result = await service.createAdenda(
+        'note-orig-1',
+        {
+          clarificationText: 'Aclaratoria sobre prueba pulpar complementaria con respuesta adecuada.',
+          reason: 'Aclaración de diagnóstico',
+        },
+        'doc-1',
+      );
+
+      expect(result.id).toBe('adenda-1');
+      expect(result.originalNoteId).toBe('note-orig-1');
+      expect(mockPrisma.evolutionNote.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            isAdenda: true,
+            isLocked: true,
+            originalNoteId: 'note-orig-1',
+          }),
+        }),
+      );
+      expect(mockPrisma.auditLog.create).toHaveBeenCalled();
+    });
+  });
 });
+

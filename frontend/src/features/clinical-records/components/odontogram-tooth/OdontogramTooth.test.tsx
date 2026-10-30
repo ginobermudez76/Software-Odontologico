@@ -49,3 +49,4 @@ describe('OdontogramTooth Component', () => {
     expect(handleSurfaceClick).toHaveBeenCalledWith(21, 'occlusal');
   });
 });
+
