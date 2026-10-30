@@ -1,0 +1,133 @@
+version: '3.8'
+
+networks:
+  sigo-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  clamav_definitions:
+
+services:
+  # 1. Base de Datos Transaccional (PostgreSQL 16)
+  sigo-db:
+    image: postgres:16-alpine
+    container_name: sigo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sigo_dental_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sigo_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sigo_password_secure}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-extensions.sql:/docker-entrypoint-initdb.d/01-init-extensions.sql
+    networks:
+      - sigo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sigo_user} -d ${POSTGRES_DB:-sigo_dental_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Caché, Sesiones y Colas (Redis 7)
+  sigo-redis:
+    image: redis:7-alpine
+    container_name: sigo-redis
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-redis_secure_password}", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sigo-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_secure_password}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 3. Almacenamiento Compatible con S3 (MinIO)
+  sigo-storage:
+    image: minio/minio:latest
+    container_name: sigo-storage
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio_admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_secret_key_2026}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - sigo-network
+
+  # 4. Motor Antivirus para Archivos Clínicos (ClamAV)
+  sigo-antivirus:
+    image: clamav/clamav:stable
+    container_name: sigo-antivirus
+    restart: unless-stopped
+    volumes:
+      - clamav_definitions:/var/lib/clamav
+    networks:
+      - sigo-network
+    healthcheck:
+      test: ["CMD", "clamdscan", "--ping", "10"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 5. Backend API (NestJS Monolito Modular)
+  sigo-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sigo-backend
+    restart: unless-stopped
+    depends_on:
+      sigo-db:
+        condition: service_healthy
+      sigo-redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-sigo_user}:${POSTGRES_PASSWORD:-sigo_password_secure}@sigo-db:5432/${POSTGRES_DB:-sigo_dental_db}?schema=public"
+      REDIS_HOST: sigo-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_secure_password}
+      JWT_SECRET: ${JWT_SECRET:-sigo_jwt_super_secret_key_change_in_prod}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-sigo_jwt_refresh_super_secret_key}
+      JWT_EXPIRATION: "15m"
+      JWT_REFRESH_EXPIRATION: "8h"
+      S3_ENDPOINT: "http://sigo-storage:9000"
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minio_admin}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minio_secret_key_2026}
+      S3_BUCKET: "sigo-dental-docs"
+      CLAMAV_HOST: sigo-antivirus
+      CLAMAV_PORT: 3310
+    ports:
+      - "3000:3000"
+    networks:
+      - sigo-network
+
+  # 6. Frontend Web (React + Vite + Nginx)
+  sigo-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sigo-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - sigo-backend
+    networks:
+      - sigo-network
+

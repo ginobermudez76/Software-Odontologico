@@ -1,0 +1,73 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background-color: #0f172a; /* Slate 900 */
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease-in-out;
+  border-right: 1px solid #1e293b;
+  flex-shrink: 0;
+}
+
+.collapsed {
+  width: 80px;
+}
+
+.brand {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.brandTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #14b8a6; /* Teal 500 */
+  white-space: nowrap;
+}
+
+.menuList {
+  flex: 1;
+  padding: 16px 12px;
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #94a3b8; /* Slate 400 */
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.menuItem:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+.menuItemActive {
+  background-color: #0d9488; /* Teal 600 */
+  color: #ffffff;
+}
+
+.menuLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

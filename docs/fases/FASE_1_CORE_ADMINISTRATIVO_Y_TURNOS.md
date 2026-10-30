@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema Integral de Gestión Odontológica y Expediente Clínico Digital (**SIGO-Dental**)  
 **Duración Estimada:** Sprints 1 al 4 (8 Semanas)  
-**Estado Actual:** `[ ] Pendiente de Inicio`  
+**Estado Actual:** `[x] Sprint 1 Completado (En Progreso: 25%)`  
 **Documento Maestro:** [`PLAN_DE_IMPLEMENTACION.md`](../../PLAN_DE_IMPLEMENTACION.md)  
 
 ---
@@ -15,24 +15,25 @@ Establecer la infraestructura base en Docker, el esquema de persistencia relacio
 ## 2. CHECKLIST DE ENTREGABLES Y TAREAS TÉCNICAS
 
 ### Sprint 1: Infraestructura Base, Docker y Autenticación RBAC
-- [ ] **1.1 Configuración de Infraestructura y Contenedores:**
-  - [ ] `docker-compose.yml` multi-servicio funcional (PostgreSQL 16, Redis 7, MinIO, ClamAV, Backend NestJS, Frontend Vite).
-  - [ ] Configuración de variables de entorno `.env.example` y scripts de inicialización.
-  - [ ] Healthchecks de conexión para base de datos y memoria caché.
-- [ ] **1.2 Modelo de Base de Datos y Migraciones Iniciales (Prisma):**
-  - [ ] Esquema Prisma inicial: tablas `users`, `roles`, `permissions`, `branches`, `dental_chairs`.
-  - [ ] Seeders de desarrollo con roles preconfigurados (Admin TI, Director Médico, Odontólogo, Asistente, Recepción, Contador).
-- [ ] **1.3 Módulo de Autenticación y Sesiones:**
-  - [ ] Login con credenciales, hash de contraseña bcrypt/argon2 y validación MFA vía TOTP.
-  - [ ] Emisión de Access Token JWT (15 minutos) con claims `sub`, `role`, `permissions`, `branchId`.
-  - [ ] Refresh Token en cookie segura HttpOnly y persistencia de sesión activa en Redis (`session:active:{userId}:{sessionId}`).
-  - [ ] Middleware interceptor para control de inactividad de 15 minutos en Redis.
-  - [ ] Endpoint de revocación remota y blacklist de tokens (`blacklist:token:{jti}`).
-- [ ] **1.4 UI Base y Layout (Frontend):**
-  - [ ] Configuración de React 18/19 con TypeScript, Vite, Tailwind CSS y Google Material Symbols.
-  - [ ] Layout principal (`AppLayout.tsx`, `AppLayout.module.css`, `useAppLayout.ts`) con Sidebar retráctil filtrado por RBAC.
-  - [ ] Navbar superior con selector de sede, badge de conexión y temporizador de sesión activa.
-  - [ ] Pantalla de Login (`LoginForm.tsx`, `LoginForm.module.css`, `useLoginForm.ts`).
+- [x] **1.1 Configuración de Infraestructura y Contenedores:**
+  - [x] `docker-compose.yml` multi-servicio funcional (PostgreSQL 16, Redis 7, MinIO, ClamAV, Backend NestJS, Frontend Vite).
+  - [x] Configuración de variables de entorno `.env.example`, `.env` y script SQL de extensiones `init-extensions.sql`.
+  - [x] Healthchecks de conexión para base de datos y memoria caché.
+- [x] **1.2 Modelo de Base de Datos y Migraciones Iniciales (Prisma):**
+  - [x] Esquema Prisma inicial: tablas `users`, `roles` (con `lectura`, `escritura`, `borrado`), `branches`, `dental_chairs`, `menu_options`, `role_menu_options`, `endpoints`, `menu_option_endpoints`.
+  - [x] Seeders de desarrollo (`prisma/seed.ts`) con roles preconfigurados (Admin TI, Director Médico, Odontólogo, Asistente, Recepción, Cajero, Contador, Paciente) y catálogo de navegación dinámica.
+- [x] **1.3 Módulo de Autenticación y Sesiones:**
+  - [x] Login con credenciales, hash de contraseña bcrypt y estructura para validación MFA.
+  - [x] Emisión de Access Token JWT (15 minutos) con claims `sub`, `role`, `branchId`, `sessionId`, `jti`.
+  - [x] Refresh Token criptográfico y persistencia de sesión activa en Redis (`session:active:{userId}:{sessionId}`).
+  - [x] Middleware/Estrategia para control de inactividad de 15 minutos en Redis y revocación por lista negra (`blacklist:token:{jti}`).
+  - [x] Endpoint dinámico `GET /api/v1/auth/my-navigation` para entregar el árbol de menú con `lectura`, `escritura`, `borrado`.
+- [x] **1.4 UI Base y Layout (Frontend):**
+  - [x] Configuración de React 18 con TypeScript, Vite, Tailwind CSS y Google Material Symbols (cero emojis).
+  - [x] Layout principal (`AppLayout.tsx`, `.module.css`, `useAppLayout.ts`) con Sidebar dinámico conectado a base de datos (`Sidebar.tsx`, `.module.css`, `useSidebar.ts`).
+  - [x] Navbar superior (`Navbar.tsx`, `.module.css`, `useNavbar.ts`) con selector de sede, badge de conexión y temporizador de sesión activa regresivo.
+  - [x] Pantalla de Login (`LoginView.tsx`, `.module.css`, `useLoginView.ts`).
+  - [x] Custom Hook `useCurrentOptionPermissions` para renderizado y visibilidad condicional de botones según `lectura`, `escritura`, `borrado`.
 
 ---
 
