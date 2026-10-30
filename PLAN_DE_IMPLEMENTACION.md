@@ -52,7 +52,7 @@ flowchart LR
 - [x] Marcado anatómico de 5 superficies por pieza dental con histórico inicial vs. evolutivo.
 - [x] Periodontograma digital automatizado con cálculo en tiempo real de NIC ($PS + MG$).
 - [x] Notas de evolución clínica bajo formato SOEP bloqueadas contra edición tras 24 horas.
-- [ ] Consentimientos informados con firma biométrica en pantalla y recetas con código QR.
+- [x] Consentimientos informados con firma biométrica en pantalla y recetas con código QR.
 
 ### Hito 3: Logística y Finanzas Clínicas Automatizadas
 - [ ] Descargo atómico de insumos por sillón/consultorio al marcar procedimientos como atendidos.

@@ -21,3 +21,4 @@ export interface AdendaModalState {
   clarificationText: string;
   reason: string;
 }
+

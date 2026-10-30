@@ -60,3 +60,4 @@ export interface EvolutionNotesResponse {
   totalNotes: number;
   notes: EvolutionNote[];
 }
+

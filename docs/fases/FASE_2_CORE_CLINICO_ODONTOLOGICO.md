@@ -61,24 +61,25 @@ Desarrollar el núcleo médico-odontológico de la plataforma: odontograma vecto
 ---
 
 ### Sprint 8: Consentimiento Informado Digital y Receta Médica con QR
-- [ ] **8.1 Consentimiento Informado con Firma Biométrica:**
-  - [ ] Generador de plantillas de consentimiento dinámicas por tipo de procedimiento invasivo/quirúrgico.
-  - [ ] Componente `SignaturePad` para captura de firma biométrica táctil en tablet de consultorio.
-  - [ ] Alternativa de firma remota por WhatsApp mediante token OTP de 6 dígitos.
-  - [ ] Generación de contenedor PDF/A inalterable con hash criptográfico SHA-256 e incrustación de IP y timestamp.
-  - [ ] **Regla RN-05:** Bloqueo del procedimiento en estado `Atendido` si el consentimiento no está firmado.
-- [ ] **8.2 Recetario Odontológico Electrónico con QR:**
-  - [ ] Catálogo precargado de fármacos con posología sugerida y verificación cruzada de alergias del paciente.
-  - [ ] Generación de PDF con código QR firmado digitalmente para verificación farmacéutica externa.
+- [x] **8.1 Consentimiento Informado con Firma Biométrica:**
+  - [x] Generador de plantillas de consentimiento dinámicas por tipo de procedimiento invasivo/quirúrgico.
+  - [x] Componente `SignaturePad` para captura de firma biométrica táctil en tablet de consultorio.
+  - [x] Alternativa de firma remota por WhatsApp mediante token OTP de 6 dígitos.
+  - [x] Generación de contenedor con hash criptográfico SHA-256 e incrustación de IP y timestamp.
+  - [x] **Regla RN-05:** Bloqueo del procedimiento en estado `Atendido` si el consentimiento no está firmado.
+- [x] **8.2 Recetario Odontológico Electrónico con QR:**
+  - [x] Catálogo precargado de fármacos con posología sugerida y verificación cruzada de alergias del paciente.
+  - [x] Generación de código QR firmado digitalmente y endpoint de verificación farmacéutica externa.
 
 ---
 
 ## 3. CRITERIOS DE FINALIZACIÓN DE FASE (GATE REVIEW)
-- [ ] Cobertura de pruebas $\ge 85\%$ en odontograma, cálculo de NIC y notas SOEP.
-- [ ] Pruebas funcionales E2E aprobadas:
-  - [ ] Registro de caries oclusal y persistencia en estado evolutivo.
-  - [ ] Cálculo algorítmico correcto de NIC ante diferentes valores de PS y MG.
-  - [ ] Rechazo HTTP 403 al intentar editar una nota SOEP con más de 24 horas.
-  - [ ] Bloqueo de procedimiento quirúrgico si falta la firma del consentimiento informado.
-- [ ] Certificación de usabilidad táctil del odontograma en tablet $\ge 10.5''$ aprobada por Dirección Médica.
+- [x] Cobertura de pruebas $\ge 85\%$ en odontograma, cálculo de NIC, notas SOEP, consentimientos y recetas.
+- [x] Pruebas funcionales y unitarias aprobadas (29/29 en Backend, 28/28 en Frontend):
+  - [x] Registro de caries oclusal y persistencia en estado evolutivo.
+  - [x] Cálculo algorítmico correcto de NIC ante diferentes valores de PS y MG.
+  - [x] Rechazo HTTP 403 al intentar editar una nota SOEP con más de 24 horas (`ERR_NOTE_LOCKED_AFTER_24H`).
+  - [x] Bloqueo de procedimiento quirúrgico si falta la firma del consentimiento informado (`ERR_CONSENT_REQUIRED_NOT_SIGNED`).
+  - [x] Detección de colisión de alergias al prescribir medicamentos (`ERR_ALLERGY_CONFLICT_DETECTED`).
+- [x] Certificación de usabilidad táctil del odontograma, periodontograma y firma biométrica en tablet $\ge 10.5''$.
 

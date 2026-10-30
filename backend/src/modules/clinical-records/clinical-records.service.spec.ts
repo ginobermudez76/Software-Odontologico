@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ClinicalRecordsService } from './clinical-records.service';
-import { NotFoundException, ForbiddenException } from '@nestjs/common';
+import { NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 
 describe('ClinicalRecordsService', () => {
   let service: ClinicalRecordsService;
@@ -15,6 +15,20 @@ describe('ClinicalRecordsService', () => {
       },
       evolutionNote: {
         findMany: vi.fn(),
+        findUnique: vi.fn(),
+        create: vi.fn(),
+        update: vi.fn(),
+      },
+      informedConsent: {
+        findMany: vi.fn(),
+        findFirst: vi.fn(),
+        findUnique: vi.fn(),
+        create: vi.fn(),
+        update: vi.fn(),
+      },
+      prescription: {
+        findMany: vi.fn(),
+        findFirst: vi.fn(),
         findUnique: vi.fn(),
         create: vi.fn(),
         update: vi.fn(),
@@ -355,5 +369,177 @@ describe('ClinicalRecordsService', () => {
       expect(mockPrisma.auditLog.create).toHaveBeenCalled();
     });
   });
+
+  describe('Consentimiento Informado Digital & Regla RN-05', () => {
+    it('debe firmar el consentimiento generando hash SHA-256 e IP', async () => {
+      mockPrisma.informedConsent.findUnique.mockResolvedValueOnce({
+        id: 'consent-1',
+        procedureName: 'Exodoncia de pieza 38',
+        risksDescription: 'Riesgos de parestesia y hemorragia',
+        isSigned: false,
+        isDeleted: false,
+      });
+
+      mockPrisma.informedConsent.update.mockResolvedValueOnce({
+        id: 'consent-1',
+        procedureName: 'Exodoncia de pieza 38',
+        isSigned: true,
+        documentHash: 'a1b2c3d4e5f6',
+        signerIp: '190.152.12.84',
+      });
+
+      const result = await service.signConsent(
+        'consent-1',
+        {
+          signatureData: 'data:image/svg+xml;base64,mockvector',
+          signerIp: '190.152.12.84',
+        },
+      );
+
+      expect(result.isSigned).toBe(true);
+      expect(mockPrisma.informedConsent.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            isSigned: true,
+            signerIp: '190.152.12.84',
+            documentHash: expect.any(String),
+          }),
+        }),
+      );
+    });
+
+    it('debe rechazar volver a firmar un consentimiento ya firmado (Conflicto)', async () => {
+      mockPrisma.informedConsent.findUnique.mockResolvedValueOnce({
+        id: 'consent-signed',
+        isSigned: true,
+        isDeleted: false,
+      });
+
+      await expect(
+        service.signConsent('consent-signed', { signatureData: 'test' }),
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it('REGLA INVIOLABLE RN-05: debe bloquear el procedimiento si el consentimiento requerido NO está firmado', async () => {
+      // Caso 1: No existe consentimiento
+      mockPrisma.informedConsent.findFirst.mockResolvedValueOnce(null);
+
+      await expect(
+        service.verifyProcedureConsent('cr-1', 'Exodoncia quirúrgica'),
+      ).rejects.toThrow(ForbiddenException);
+
+      // Caso 2: Existe pero no está firmado (isSigned: false)
+      mockPrisma.informedConsent.findFirst.mockResolvedValueOnce({
+        id: 'consent-unsign',
+        procedureName: 'Exodoncia quirúrgica',
+        isSigned: false,
+      });
+
+      await expect(
+        service.verifyProcedureConsent('cr-1', 'Exodoncia quirúrgica'),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('REGLA INVIOLABLE RN-05: debe autorizar el procedimiento si el consentimiento está firmado', async () => {
+      mockPrisma.informedConsent.findFirst.mockResolvedValueOnce({
+        id: 'consent-ok',
+        procedureName: 'Exodoncia quirúrgica',
+        isSigned: true,
+      });
+
+      const ok = await service.verifyProcedureConsent('cr-1', 'Exodoncia quirúrgica');
+      expect(ok).toBe(true);
+    });
+  });
+
+  describe('Recetario Odontológico Electrónico con QR & Alergias', () => {
+    it('debe DETECTAR CONFLICTO DE ALERGIA y lanzar ConflictException si se prescribe Amoxicilina a paciente con ALERGIA_PENICILINA', async () => {
+      mockPrisma.clinicalRecord.findUnique.mockResolvedValueOnce({
+        id: 'cr-1',
+        visibleAlerts: ['ALERGIA_PENICILINA'],
+        isDeleted: false,
+      });
+
+      await expect(
+        service.createPrescription(
+          'p-1',
+          {
+            items: [
+              {
+                name: 'Amoxicilina 500mg',
+                dose: '500 mg',
+                frequency: 'Cada 8 horas',
+                duration: 'Por 7 días',
+              },
+            ],
+            bypassAllergyWarning: false,
+          },
+          'doc-1',
+        ),
+      ).rejects.toThrow(ConflictException);
+
+      expect(mockPrisma.prescription.create).not.toHaveBeenCalled();
+    });
+
+    it('debe permitir la emisión si el clínico confirma la prescripción (bypassAllergyWarning = true)', async () => {
+      mockPrisma.clinicalRecord.findUnique.mockResolvedValueOnce({
+        id: 'cr-1',
+        visibleAlerts: ['ALERGIA_PENICILINA'],
+        isDeleted: false,
+      });
+
+      mockPrisma.prescription.create.mockResolvedValueOnce({
+        id: 'rx-1',
+        qrVerificationCode: 'SIGO-RX-ABCDEF',
+        items: [{ name: 'Amoxicilina 500mg' }],
+      });
+
+      const result = await service.createPrescription(
+        'p-1',
+        {
+          items: [
+            {
+              name: 'Amoxicilina 500mg',
+              dose: '500 mg',
+              frequency: 'Cada 8 horas',
+              duration: 'Por 7 días',
+            },
+          ],
+          bypassAllergyWarning: true,
+        },
+        'doc-1',
+      );
+
+      expect(result.id).toBe('rx-1');
+      expect(mockPrisma.prescription.create).toHaveBeenCalled();
+    });
+
+    it('debe verificar la autenticidad pública de la receta mediante código QR', async () => {
+      mockPrisma.prescription.findFirst.mockResolvedValueOnce({
+        id: 'rx-1',
+        qrVerificationCode: 'SIGO-RX-123456',
+        createdAt: new Date(),
+        doctor: { firstName: 'Mario', lastName: 'Salas', email: 'mario@sigo.test' },
+        clinicalRecord: {
+          patient: {
+            firstName: 'Carlos',
+            lastName: 'Ramos',
+            documentType: 'DNI',
+            documentNumber: '1723456789',
+          },
+        },
+        items: [{ name: 'Paracetamol 500mg', dose: '500mg' }],
+        instructions: 'Tomar cada 8 horas en caso de dolor',
+      });
+
+      const result = await service.verifyPublicPrescription('SIGO-RX-123456');
+
+      expect(result.isValid).toBe(true);
+      expect(result.qrVerificationCode).toBe('SIGO-RX-123456');
+      expect(result.doctor.fullName).toBe('Dr(a). Mario Salas');
+      expect(result.patient.fullName).toBe('Carlos Ramos');
+    });
+  });
 });
+
 

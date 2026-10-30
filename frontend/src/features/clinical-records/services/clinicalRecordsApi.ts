@@ -16,6 +16,13 @@ import {
   CreateAdendaPayload,
   NoteAdenda,
 } from '../types/evolution-note.types';
+import {
+  InformedConsent,
+  Prescription,
+  CreateConsentPayload,
+  SignConsentPayload,
+  CreatePrescriptionPayload,
+} from '../types/consent-prescription.types';
 
 export const clinicalRecordsApi = {
   async getOdontogram(patientId: string): Promise<OdontogramResponse> {
@@ -82,6 +89,41 @@ export const clinicalRecordsApi = {
     const res = await apiClient.post(`/api/v1/clinical-records/notes/${noteId}/adendas`, payload);
     return res.data;
   },
+
+  async getConsents(patientId: string): Promise<{ totalConsents: number; consents: InformedConsent[] }> {
+    const res = await apiClient.get(`/api/v1/clinical-records/${patientId}/consents`);
+    return res.data;
+  },
+
+  async createConsent(
+    patientId: string,
+    payload: CreateConsentPayload,
+  ): Promise<InformedConsent> {
+    const res = await apiClient.post(`/api/v1/clinical-records/${patientId}/consents`, payload);
+    return res.data;
+  },
+
+  async signConsent(
+    consentId: string,
+    payload: SignConsentPayload,
+  ): Promise<InformedConsent> {
+    const res = await apiClient.put(`/api/v1/clinical-records/consents/${consentId}/sign`, payload);
+    return res.data;
+  },
+
+  async getPrescriptions(patientId: string): Promise<{ totalPrescriptions: number; prescriptions: Prescription[] }> {
+    const res = await apiClient.get(`/api/v1/clinical-records/${patientId}/prescriptions`);
+    return res.data;
+  },
+
+  async createPrescription(
+    patientId: string,
+    payload: CreatePrescriptionPayload,
+  ): Promise<Prescription> {
+    const res = await apiClient.post(`/api/v1/clinical-records/${patientId}/prescriptions`, payload);
+    return res.data;
+  },
 };
+
 
 

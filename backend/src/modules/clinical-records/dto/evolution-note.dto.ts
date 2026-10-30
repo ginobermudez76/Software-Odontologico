@@ -93,3 +93,4 @@ export class CreateAdendaDto {
   @IsString()
   reason?: string;
 }
+

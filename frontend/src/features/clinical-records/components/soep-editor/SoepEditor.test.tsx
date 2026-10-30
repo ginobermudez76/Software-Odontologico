@@ -135,3 +135,4 @@ describe('SoepEditor Component', () => {
     expect(screen.queryByText('Añadir Adenda / Aclaratoria')).toBeNull();
   });
 });
+

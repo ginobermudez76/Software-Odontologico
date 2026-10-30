@@ -20,6 +20,8 @@ import {
   UpdateEvolutionNoteDto,
   CreateAdendaDto,
 } from './dto/evolution-note.dto';
+import { CreateConsentDto, SignConsentDto } from './dto/consent.dto';
+import { CreatePrescriptionDto } from './dto/prescription.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Expediente Clínico & Odontograma')
@@ -121,6 +123,64 @@ export class ClinicalRecordsController {
   ) {
     return this.clinicalRecordsService.createAdenda(noteId, dto, req.user?.id);
   }
+
+  // ==========================================
+  // SPRINT 8: CONSENTIMIENTO INFORMADO & RECETAS
+  // ==========================================
+
+  @Get(':patientId/consents')
+  @ApiOperation({ summary: 'Listar consentimientos informados del paciente' })
+  @ApiResponse({ status: 200, description: 'Lista de consentimientos' })
+  async getConsents(@Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string) {
+    return this.clinicalRecordsService.getConsents(patientId);
+  }
+
+  @Post(':patientId/consents')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Crear consentimiento informado para procedimiento invasivo' })
+  @ApiResponse({ status: 201, description: 'Consentimiento generado' })
+  async createConsent(
+    @Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string,
+    @Body() dto: CreateConsentDto,
+    @Req() req: any,
+  ) {
+    return this.clinicalRecordsService.createConsent(patientId, dto, req.user?.id);
+  }
+
+  @Put('consents/:consentId/sign')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Firmar digitalmente consentimiento informado con hash SHA-256 e IP' })
+  @ApiResponse({ status: 200, description: 'Consentimiento firmado e inmutable' })
+  @ApiResponse({ status: 409, description: 'Consentimiento ya firmado previamente' })
+  async signConsent(
+    @Param('consentId', new ParseUUIDPipe({ version: '4' })) consentId: string,
+    @Body() dto: SignConsentDto,
+    @Req() req: any,
+  ) {
+    const clientIp = req.ip || req.connection?.remoteAddress;
+    return this.clinicalRecordsService.signConsent(consentId, dto, clientIp);
+  }
+
+  @Get(':patientId/prescriptions')
+  @ApiOperation({ summary: 'Listar recetas odontológicas emitidas al paciente' })
+  @ApiResponse({ status: 200, description: 'Lista de recetas' })
+  async getPrescriptions(@Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string) {
+    return this.clinicalRecordsService.getPrescriptions(patientId);
+  }
+
+  @Post(':patientId/prescriptions')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Emitir receta electrónica con QR y validación de alergias' })
+  @ApiResponse({ status: 201, description: 'Receta emitida con código QR' })
+  @ApiResponse({ status: 409, description: 'Conflicto de alergia detectado (requiere confirmación)' })
+  async createPrescription(
+    @Param('patientId', new ParseUUIDPipe({ version: '4' })) patientId: string,
+    @Body() dto: CreatePrescriptionDto,
+    @Req() req: any,
+  ) {
+    return this.clinicalRecordsService.createPrescription(patientId, dto, req.user?.id);
+  }
 }
+
 
 

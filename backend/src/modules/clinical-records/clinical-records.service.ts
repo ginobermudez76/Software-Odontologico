@@ -1,4 +1,11 @@
-import { Injectable, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  ConflictException,
+  Logger,
+} from '@nestjs/common';
+import { createHash } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateOdontogramDto } from './dto/update-odontogram.dto';
 import {
@@ -11,6 +18,8 @@ import {
   UpdateEvolutionNoteDto,
   CreateAdendaDto,
 } from './dto/evolution-note.dto';
+import { CreateConsentDto, SignConsentDto } from './dto/consent.dto';
+import { CreatePrescriptionDto } from './dto/prescription.dto';
 
 @Injectable()
 export class ClinicalRecordsService {
@@ -635,6 +644,386 @@ export class ClinicalRecordsService {
       createdAt: adenda.createdAt,
     };
   }
+
+  // ==========================================
+  // SPRINT 8: CONSENTIMIENTO INFORMADO & RECETAS
+  // ==========================================
+
+  /**
+   * Obtiene todos los consentimientos informados del paciente
+   */
+  async getConsents(patientId: string) {
+    const record = await this.prisma.clinicalRecord.findUnique({
+      where: { patientId },
+    });
+
+    if (!record || record.isDeleted) {
+      throw new NotFoundException({
+        errorCode: 'ERR_CLINICAL_RECORD_NOT_FOUND',
+        detail: `No se encontró el expediente clínico del paciente ${patientId}`,
+      });
+    }
+
+    const consents = await this.prisma.informedConsent.findMany({
+      where: {
+        clinicalRecordId: record.id,
+        isDeleted: false,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return {
+      recordId: record.id,
+      patientId,
+      totalConsents: consents.length,
+      consents,
+    };
+  }
+
+  /**
+   * Crea un consentimiento informado para un procedimiento invasivo o quirúrgico
+   */
+  async createConsent(
+    patientId: string,
+    dto: CreateConsentDto,
+    doctorId?: string,
+  ) {
+    const record = await this.prisma.clinicalRecord.findUnique({
+      where: { patientId },
+    });
+
+    if (!record || record.isDeleted) {
+      throw new NotFoundException({
+        errorCode: 'ERR_CLINICAL_RECORD_NOT_FOUND',
+        detail: `No se encontró el expediente clínico del paciente ${patientId}`,
+      });
+    }
+
+    const consent = await this.prisma.informedConsent.create({
+      data: {
+        clinicalRecordId: record.id,
+        procedureName: dto.procedureName,
+        risksDescription: dto.risksDescription,
+        isSigned: false,
+      },
+    });
+
+    // Auditoría forense
+    await this.prisma.auditLog.create({
+      data: {
+        userId: doctorId,
+        action: 'CREATE',
+        resource: 'informed_consents',
+        resourceId: consent.id,
+        metadata: {
+          action: 'CREATE_CONSENT',
+          procedureName: dto.procedureName,
+          clinicalRecordId: record.id,
+        },
+      },
+    });
+
+    return consent;
+  }
+
+  /**
+   * Firma biométrica del consentimiento informado con hash criptográfico SHA-256 e IP
+   */
+  async signConsent(
+    consentId: string,
+    dto: SignConsentDto,
+    clientIp?: string,
+  ) {
+    const consent = await this.prisma.informedConsent.findUnique({
+      where: { id: consentId },
+    });
+
+    if (!consent || consent.isDeleted) {
+      throw new NotFoundException({
+        errorCode: 'ERR_CONSENT_NOT_FOUND',
+        detail: `No se encontró el consentimiento informado con ID ${consentId}`,
+      });
+    }
+
+    if (consent.isSigned) {
+      throw new ConflictException({
+        errorCode: 'ERR_CONSENT_ALREADY_SIGNED',
+        detail: 'Este consentimiento informado ya fue firmado y es inalterable.',
+      });
+    }
+
+    const signedAt = new Date();
+    const effectiveIp = dto.signerIp || clientIp || '127.0.0.1';
+
+    // Generar Hash criptográfico SHA-256 de inmutabilidad
+    const dataToHash = `${consent.id}|${consent.procedureName}|${consent.risksDescription}|${dto.signatureData}|${effectiveIp}|${signedAt.toISOString()}`;
+    const documentHash = createHash('sha256').update(dataToHash).digest('hex');
+
+    const updated = await this.prisma.informedConsent.update({
+      where: { id: consentId },
+      data: {
+        patientSignature: dto.signatureData,
+        isSigned: true,
+        signedAt,
+        signerIp: effectiveIp,
+        documentHash,
+        otpCode: dto.otpCode,
+      },
+    });
+
+    // Auditoría forense LOPDP
+    await this.prisma.auditLog.create({
+      data: {
+        action: 'UPDATE',
+        resource: 'informed_consents',
+        resourceId: consent.id,
+        metadata: {
+          action: 'SIGN_CONSENT',
+          documentHash,
+          signerIp: effectiveIp,
+          isOtp: Boolean(dto.otpCode),
+        },
+      },
+    });
+
+    return updated;
+  }
+
+  /**
+   * REGLA INVIOLABLE RN-05:
+   * Bloquea el procedimiento en estado 'Atendido' si el consentimiento informado requerido no está firmado
+   */
+  async verifyProcedureConsent(clinicalRecordId: string, procedureName: string) {
+    const consent = await this.prisma.informedConsent.findFirst({
+      where: {
+        clinicalRecordId,
+        procedureName: { contains: procedureName, mode: 'insensitive' },
+        isDeleted: false,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!consent || !consent.isSigned) {
+      throw new ForbiddenException({
+        errorCode: 'ERR_CONSENT_REQUIRED_NOT_SIGNED',
+        detail: `Regla RN-05: No es posible marcar como atendido el procedimiento '${procedureName}' sin contar con el Consentimiento Informado debidamente firmado.`,
+      });
+    }
+
+    return true;
+  }
+
+  /**
+   * Obtiene el listado de recetas odontológicas del paciente
+   */
+  async getPrescriptions(patientId: string) {
+    const record = await this.prisma.clinicalRecord.findUnique({
+      where: { patientId },
+    });
+
+    if (!record || record.isDeleted) {
+      throw new NotFoundException({
+        errorCode: 'ERR_CLINICAL_RECORD_NOT_FOUND',
+        detail: `No se encontró el expediente clínico del paciente ${patientId}`,
+      });
+    }
+
+    const prescriptions = await this.prisma.prescription.findMany({
+      where: {
+        clinicalRecordId: record.id,
+        isDeleted: false,
+      },
+      include: {
+        doctor: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return {
+      recordId: record.id,
+      patientId,
+      totalPrescriptions: prescriptions.length,
+      prescriptions,
+    };
+  }
+
+  /**
+   * Emite una receta odontológica electrónica con código QR y verificación cruzada de alergias
+   */
+  async createPrescription(
+    patientId: string,
+    dto: CreatePrescriptionDto,
+    doctorId?: string,
+  ) {
+    const record = await this.prisma.clinicalRecord.findUnique({
+      where: { patientId },
+      include: {
+        patient: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            documentNumber: true,
+          },
+        },
+      },
+    });
+
+    if (!record || record.isDeleted) {
+      throw new NotFoundException({
+        errorCode: 'ERR_CLINICAL_RECORD_NOT_FOUND',
+        detail: `No se encontró el expediente clínico del paciente ${patientId}`,
+      });
+    }
+
+    // Verificación cruzada reactiva de alergias
+    const visibleAlerts: string[] = Array.isArray(record.visibleAlerts)
+      ? (record.visibleAlerts as string[])
+      : [];
+    const prescribedNames = dto.items.map((i) => i.name.toLowerCase()).join(' ');
+
+    if (!dto.bypassAllergyWarning) {
+      if (
+        visibleAlerts.includes('ALERGIA_PENICILINA') &&
+        (prescribedNames.includes('amoxicilina') ||
+          prescribedNames.includes('ampicilina') ||
+          prescribedNames.includes('penicilina'))
+      ) {
+        throw new ConflictException({
+          errorCode: 'ERR_ALLERGY_CONFLICT_DETECTED',
+          detail:
+            'Alerta Crítica: El paciente tiene registrada ALERGIA A LA PENICILINA y se está prescribiendo un betalactámico (Amoxicilina/Ampicilina). Requiere confirmación explícita o cambio a Clindamicina/Azitromicina.',
+          alertTriggered: 'ALERGIA_PENICILINA',
+        });
+      }
+
+      if (
+        visibleAlerts.includes('ALERGIA_AINES') &&
+        (prescribedNames.includes('ibuprofeno') ||
+          prescribedNames.includes('ketorolaco') ||
+          prescribedNames.includes('diclofenaco') ||
+          prescribedNames.includes('naproxeno'))
+      ) {
+        throw new ConflictException({
+          errorCode: 'ERR_ALLERGY_CONFLICT_DETECTED',
+          detail:
+            'Alerta Crítica: El paciente tiene registrada ALERGIA A AINES y se está prescribiendo un analgésico antiinflamatorio no esteroideo. Requiere confirmación explícita o cambio a Paracetamol/Tramadol.',
+          alertTriggered: 'ALERGIA_AINES',
+        });
+      }
+    }
+
+    // Generar código único criptográfico para el QR de verificación farmacéutica
+    const qrVerificationCode = `SIGO-RX-${Date.now().toString(36).toUpperCase()}-${createHash('sha256')
+      .update(`${record.id}|${Date.now()}|${doctorId}`)
+      .digest('hex')
+      .substring(0, 12)
+      .toUpperCase()}`;
+
+    const prescription = await this.prisma.prescription.create({
+      data: {
+        clinicalRecordId: record.id,
+        doctorId: doctorId || '00000000-0000-0000-0000-000000000001',
+        items: dto.items as any,
+        instructions: dto.instructions,
+        qrVerificationCode,
+      },
+      include: {
+        doctor: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    // Auditoría forense
+    await this.prisma.auditLog.create({
+      data: {
+        userId: doctorId,
+        action: 'CREATE',
+        resource: 'prescriptions',
+        resourceId: prescription.id,
+        metadata: {
+          action: 'CREATE_PRESCRIPTION',
+          qrVerificationCode,
+          itemsCount: dto.items.length,
+          bypassAllergyWarning: Boolean(dto.bypassAllergyWarning),
+        },
+      },
+    });
+
+    return prescription;
+  }
+
+  /**
+   * Endpoint de Verificación Pública de Receta Odontológica Electrónica vía QR
+   */
+  async verifyPublicPrescription(qrCode: string) {
+    const prescription = await this.prisma.prescription.findFirst({
+      where: {
+        qrVerificationCode: qrCode,
+        isDeleted: false,
+      },
+      include: {
+        doctor: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        clinicalRecord: {
+          include: {
+            patient: {
+              select: {
+                firstName: true,
+                lastName: true,
+                documentType: true,
+                documentNumber: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!prescription) {
+      throw new NotFoundException({
+        errorCode: 'ERR_PRESCRIPTION_NOT_FOUND',
+        detail: `No se encontró una receta electrónica válida con el código de verificación provisto: ${qrCode}`,
+      });
+    }
+
+    return {
+      isValid: true,
+      qrVerificationCode: prescription.qrVerificationCode,
+      issuedAt: prescription.createdAt,
+      doctor: {
+        fullName: `Dr(a). ${prescription.doctor.firstName} ${prescription.doctor.lastName}`,
+        email: prescription.doctor.email,
+      },
+      patient: {
+        fullName: `${prescription.clinicalRecord.patient.firstName} ${prescription.clinicalRecord.patient.lastName}`,
+        document: `${prescription.clinicalRecord.patient.documentType} ${prescription.clinicalRecord.patient.documentNumber}`,
+      },
+      items: prescription.items,
+      instructions: prescription.instructions,
+      clinic: 'SIGO-Dental Red Odontológica',
+      verificationTimestamp: new Date(),
+    };
+  }
 }
+
 
 

@@ -256,6 +256,8 @@ model InformedConsent {
   procedureName      String    @map("procedure_name") @db.VarChar(150)
   risksDescription   String    @map("risks_description") @db.Text
   patientSignature   String?   @map("patient_signature") @db.Text
+  documentHash       String?   @map("document_hash") @db.VarChar(64)
+  signerIp           String?   @map("signer_ip") @db.VarChar(45)
   otpCode            String?   @map("otp_code") @db.VarChar(10)
   isSigned           Boolean   @default(false) @map("is_signed")
   signedAt           DateTime? @map("signed_at") @db.Timestamptz
