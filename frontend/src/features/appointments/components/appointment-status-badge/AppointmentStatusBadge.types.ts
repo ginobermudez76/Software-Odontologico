@@ -5,3 +5,4 @@ export interface AppointmentStatusBadgeProps {
   showIcon?: boolean;
   className?: string;
 }
+

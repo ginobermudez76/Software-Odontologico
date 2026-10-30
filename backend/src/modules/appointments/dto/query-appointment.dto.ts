@@ -55,3 +55,4 @@ export class QueryAppointmentDto {
   @Min(1)
   limit?: number = 50;
 }
+

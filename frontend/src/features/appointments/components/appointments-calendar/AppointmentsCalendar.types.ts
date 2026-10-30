@@ -10,3 +10,4 @@ export interface CalendarFilterState {
   chairId: string;
   status: string;
 }
+

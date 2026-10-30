@@ -70,3 +70,4 @@ describe('PosCheckout Component', () => {
     expect(screen.queryByTestId('btn-emit-invoice')).toBeNull();
   });
 });
+

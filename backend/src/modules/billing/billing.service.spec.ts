@@ -149,3 +149,4 @@ describe('BillingService', () => {
     expect(mockPrisma.auditLog.create).toHaveBeenCalled();
   });
 });
+

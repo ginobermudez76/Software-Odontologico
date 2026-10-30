@@ -18,3 +18,4 @@ export interface AppointmentFormData {
   endTime: string;
   reason: string;
 }
+

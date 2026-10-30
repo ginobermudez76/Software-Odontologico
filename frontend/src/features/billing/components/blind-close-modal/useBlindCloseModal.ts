@@ -52,3 +52,4 @@ export const useBlindCloseModal = ({ onClose, onSuccess, shift }: BlindCloseModa
     handleFinish,
   };
 };
+

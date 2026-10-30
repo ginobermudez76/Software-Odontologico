@@ -83,3 +83,4 @@ export interface CreateInvoicePayload {
   items: InvoiceItem[];
   paymentDetails: PaymentSplit[];
 }
+

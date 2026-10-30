@@ -10,3 +10,4 @@ export interface PosCheckoutState {
 export interface PosCheckoutProps {
   initialPatientId?: string;
 }
+

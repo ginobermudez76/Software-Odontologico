@@ -156,3 +156,4 @@ describe('AppointmentsService', () => {
     expect(mockPrisma.auditLog.create).toHaveBeenCalled();
   });
 });
+

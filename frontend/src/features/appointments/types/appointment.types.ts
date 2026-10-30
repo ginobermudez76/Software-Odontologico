@@ -79,3 +79,4 @@ export interface ChangeStatusPayload {
   status: AppointmentStatus;
   waitingMinutes?: number;
 }
+

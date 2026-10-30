@@ -2,7 +2,7 @@
 
 **Proyecto:** Sistema Integral de Gestión Odontológica y Expediente Clínico Digital (**SIGO-Dental**)  
 **Duración Estimada:** Sprints 5 al 8 (8 Semanas)  
-**Estado Actual:** `[ ] Bloqueada (Depende de Fase 1)`  
+**Estado Actual:** `[x] En Progreso`  
 **Documento Maestro:** [`PLAN_DE_IMPLEMENTACION.md`](../../PLAN_DE_IMPLEMENTACION.md)  
 
 ---

@@ -17,3 +17,4 @@ export class OpenCashShiftDto {
   @IsOptional()
   notes?: string;
 }
+

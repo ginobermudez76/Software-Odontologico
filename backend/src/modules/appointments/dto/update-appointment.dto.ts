@@ -19,3 +19,4 @@ export class UpdateAppointmentDto extends PartialType(CreateAppointmentDto) {
   @Min(0)
   waitingMinutes?: number;
 }
+

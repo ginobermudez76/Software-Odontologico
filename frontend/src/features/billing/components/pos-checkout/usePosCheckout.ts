@@ -191,3 +191,4 @@ export const usePosCheckout = (initialPatientId?: string) => {
     handleReset,
   };
 };
+

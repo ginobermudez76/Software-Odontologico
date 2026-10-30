@@ -6,3 +6,4 @@ export interface BlindCloseModalProps {
   onSuccess: (result: BlindCloseResult) => void;
   shift: CashShift;
 }
+

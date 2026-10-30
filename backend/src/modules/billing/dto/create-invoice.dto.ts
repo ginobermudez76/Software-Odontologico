@@ -81,3 +81,4 @@ export class CreateInvoiceDto {
   @Type(() => PaymentSplitDto)
   paymentDetails: PaymentSplitDto[];
 }
+

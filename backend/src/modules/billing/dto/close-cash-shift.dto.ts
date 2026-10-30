@@ -16,3 +16,4 @@ export class CloseBlindCashShiftDto {
   @IsOptional()
   notes?: string;
 }
+

@@ -18,3 +18,4 @@ export class ChangeAppointmentStatusDto {
   @Min(0)
   waitingMinutes?: number;
 }
+

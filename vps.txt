@@ -1,0 +1,21 @@
+# Conexión a VPS Google Cloud (software-odontologico)
+
+## Opción 1: Conexión nativa con SSH (Recomendada)
+Comando para conectarte una vez registrada la clave pública:
+ssh -i "C:\Users\Gino\.ssh\google_compute_engine" gino@<IP_EXTERNA_DE_TU_VM>
+
+## Clave Pública generada para registrar en Google Cloud:
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK77kSqXy5/SEhHNVZwqs3FwLBTByHVS9qn7yqsKYKWk gino
+
+### Pasos para registrar la clave en Google Cloud:
+1. Entra a la consola: https://console.cloud.google.com/compute/instances?project=framework-513204
+2. Haz clic sobre el nombre de la máquina: "software-odontologico".
+3. En la barra superior, haz clic en "EDITAR" (Edit).
+4. Desplázate hacia abajo hasta la sección "Claves SSH" (SSH Keys) y presiona "Agregar elemento" (Add item).
+5. Pega la clave pública indicada arriba (detectará automáticamente el usuario "gino").
+6. Haz clic en "GUARDAR" (Save) al final de la página.
+7. Copia la "IP externa" (External IP) que muestra la VM y ejecuta el comando de conexión.
+
+---
+## Opción 2: Conexión mediante gcloud CLI (si instalas Google Cloud SDK)
+gcloud compute ssh --zone "us-central1-a" "software-odontologico" --project "framework-513204"

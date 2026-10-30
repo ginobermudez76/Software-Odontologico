@@ -434,3 +434,4 @@ export const PosCheckout: React.FC<PosCheckoutProps> = ({ initialPatientId }) =>
     </div>
   );
 };
+

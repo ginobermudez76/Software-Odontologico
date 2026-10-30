@@ -171,3 +171,4 @@ export const BlindCloseModal: React.FC<BlindCloseModalProps> = (props) => {
     </div>
   );
 };
+
