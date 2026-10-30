@@ -43,3 +43,4 @@ Realizar las pruebas de aceptación con usuarios finales (UAT) en entorno de pre
 - [ ] Reporte de ciberseguridad emitido por CISO/SecOps sin vulnerabilidades abiertas de severidad Alta o Crítica.
 - [ ] Cobertura de pruebas automatizadas $\ge 80\%$ en todo el repositorio.
 - [ ] Políticas de respaldo y recuperación ante desastres (RPO $\le 1\text{ h}$, RTO $\le 4\text{ h}$) probadas exitosamente mediante simulacro.
+

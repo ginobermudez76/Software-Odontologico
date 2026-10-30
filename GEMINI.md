@@ -5,6 +5,8 @@
 * [`SRS_SIGO_Dental.md`](./SRS_SIGO_Dental.md) (Especificación de Requerimientos de Software)
 * [`ARQUITECTURA_TECNICA_SIGO_DENTAL.md`](./ARQUITECTURA_TECNICA_SIGO_DENTAL.md) (Diseño de Arquitectura y Sistema)
 * [`PLAN_DE_IMPLEMENTACION.md`](./PLAN_DE_IMPLEMENTACION.md) (Plan de Implementación y Fases)
+* [`docs/ESPECIFICACION_PANTALLAS_UI_UX.md`](./docs/ESPECIFICACION_PANTALLAS_UI_UX.md) (Wireframes y Pantallas UI/UX)
+* [`docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md`](./docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md) (Estándares de Seguridad OWASP y ASVS Nivel 2)
 
 ---
 
@@ -50,7 +52,7 @@
 
 ---
 
-## 3. SEGURIDAD Y CUMPLIMIENTO LOPDP (DATOS SENSIBLES)
+## 3. SEGURIDAD, OWASP Y CUMPLIMIENTO LOPDP (DATOS SENSIBLES)
 
 1. **Cifrado a Nivel de Campo (Field-Level Encryption):**
    * Los antecedentes patológicos, diagnósticos médicos y notas clínicas deben cifrarse en reposo mediante **AES-256-GCM** antes de persistir en PostgreSQL.
@@ -63,6 +65,11 @@
    * Access Token con vida máxima de 15 minutos.
    * Refresh Token en cookie HttpOnly / SameSite=Strict.
    * Desconexión automática tras 15 minutos continuos de inactividad gestionada en Redis.
+5. **Estándares OWASP Top 10 y ASVS Nivel 2:**
+   * **BOLA / Broken Access Control:** Todos los identificadores deben ser `UUID v4` y verificarse con el contexto de sede y rol del usuario.
+   * **Anti-Inyección:** Prohibido el SQL crudo concatenado; utilizar exclusivamente Prisma ORM tipado.
+   * **Rate Limiting:** Máximo 5 intentos fallidos de login antes de bloqueo temporal de 15 minutos en Redis.
+   * **Seguridad HTTP:** Configuración obligatoria de cabeceras seguras con Helmet (CSP, HSTS, X-Content-Type-Options: nosniff).
 
 ---
 
@@ -77,3 +84,4 @@
 3. **Documentación:**
    * Mantener sincronizada la especificación OpenAPI 3.0 / Swagger en `/api/docs`.
    * Registrar cualquier cambio arquitectónico relevante en un archivo ADR dentro de `/docs/adr/`.
+

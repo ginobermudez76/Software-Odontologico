@@ -8,6 +8,8 @@
 * [`SRS_SIGO_Dental.md`](./SRS_SIGO_Dental.md) (Especificación de Requerimientos de Software)
 * [`ARQUITECTURA_TECNICA_SIGO_DENTAL.md`](./ARQUITECTURA_TECNICA_SIGO_DENTAL.md) (Diseño de Arquitectura y Sistema)
 * [`GEMINI.md`](./GEMINI.md) (Reglas del Proyecto para el Asistente AI)
+* [`docs/ESPECIFICACION_PANTALLAS_UI_UX.md`](./docs/ESPECIFICACION_PANTALLAS_UI_UX.md) (Wireframes y Pantallas UI/UX)
+* [`docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md`](./docs/ESTANDARES_SEGURIDAD_OWASP_ASVS.md) (Estándares de Seguridad OWASP y ASVS Nivel 2)
 
 ---
 
@@ -71,3 +73,4 @@ Cada vez que el equipo de desarrollo complete una tarea o sprint:
 1. Se marcará el checkbox correspondiente `[x]` en el archivo de la fase respectiva (`docs/fases/FASE_X_...md`).
 2. Se actualizará el porcentaje de avance en este archivo maestro [`PLAN_DE_IMPLEMENTACION.md`](./PLAN_DE_IMPLEMENTACION.md).
 3. Todo cambio en la arquitectura o reglas de negocio deberá reflejarse en [`ARQUITECTURA_TECNICA_SIGO_DENTAL.md`](./ARQUITECTURA_TECNICA_SIGO_DENTAL.md) y [`GEMINI.md`](./GEMINI.md).
+

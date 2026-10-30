@@ -87,3 +87,4 @@ Establecer la infraestructura base en Docker, el esquema de persistencia relacio
   - [ ] Cierre ciego de caja registrando discrepancias sin filtrar montos teóricos a la UI.
   - [ ] Cifrado AES-256-GCM comprobado en campos de salud de la base de datos PostgreSQL.
 - [ ] Revisión técnica aprobada por Arquitecto de Software y Lead de QA.
+

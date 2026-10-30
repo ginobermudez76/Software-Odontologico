@@ -60,3 +60,4 @@ Automatizar el control logístico y financiero de la clínica: vinculación de r
   - [ ] Cálculo exacto de comisiones descontando el costo del laboratorio dental.
   - [ ] Conversión de un presupuesto aprobado en citas agendadas sin duplicar registros.
 - [ ] Validación contable del módulo de liquidación de honorarios aprobada por el Contador General.
+

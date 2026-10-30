@@ -82,3 +82,4 @@ Desarrollar el núcleo médico-odontológico de la plataforma: odontograma vecto
   - [ ] Rechazo HTTP 403 al intentar editar una nota SOEP con más de 24 horas.
   - [ ] Bloqueo de procedimiento quirúrgico si falta la firma del consentimiento informado.
 - [ ] Certificación de usabilidad táctil del odontograma en tablet $\ge 10.5''$ aprobada por Dirección Médica.
+
