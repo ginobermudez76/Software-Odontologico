@@ -62,3 +62,4 @@ export const SignaturePad: React.FC<SignaturePadProps> = ({
     </div>
   );
 };
+

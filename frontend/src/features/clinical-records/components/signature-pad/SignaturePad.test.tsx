@@ -18,3 +18,4 @@ describe('SignaturePad Component', () => {
     expect(clearButton?.disabled).toBe(true);
   });
 });
+

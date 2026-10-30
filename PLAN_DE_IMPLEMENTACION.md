@@ -55,8 +55,8 @@ flowchart LR
 - [x] Consentimientos informados con firma biométrica en pantalla y recetas con código QR.
 
 ### Hito 3: Logística y Finanzas Clínicas Automatizadas
-- [ ] Descargo atómico de insumos por sillón/consultorio al marcar procedimientos como atendidos.
-- [ ] Control de insumos por número de lote y fecha de caducidad con alertas preventivas.
+- [x] Descargo atómico de insumos por sillón/consultorio al marcar procedimientos como atendidos (Sprint 9 - Regla RN-06).
+- [x] Control de insumos por número de lote y fecha de caducidad con alertas preventivas FEFO (Sprint 9).
 - [ ] Motor de liquidación de comisiones con deducción previa de costos de laboratorio externo.
 - [ ] Presupuestos multinivel por fases clínicas con validez de 30 días y conversión a citas.
 - [ ] Tablero de mando directivo con indicadores clínicos y financieros en tiempo real.

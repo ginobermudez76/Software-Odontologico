@@ -12,16 +12,43 @@ interface AuthState {
   logout: () => void;
 }
 
+const getStorageItem = (key: string): string | null => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage.getItem(key);
+    }
+  } catch {
+    // Ignore storage errors in test / headless environments
+  }
+  return null;
+};
+
+const setStorageItem = (key: string, value: string): void => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem(key, value);
+    }
+  } catch {}
+};
+
+const removeStorageItem = (key: string): void => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.removeItem(key);
+    }
+  } catch {}
+};
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  accessToken: localStorage.getItem('sigo_access_token'),
-  refreshToken: localStorage.getItem('sigo_refresh_token'),
+  accessToken: getStorageItem('sigo_access_token'),
+  refreshToken: getStorageItem('sigo_refresh_token'),
   navigationTree: [],
-  isAuthenticated: !!localStorage.getItem('sigo_access_token'),
+  isAuthenticated: !!getStorageItem('sigo_access_token'),
 
   setAuth: (user, accessToken, refreshToken) => {
-    localStorage.setItem('sigo_access_token', accessToken);
-    localStorage.setItem('sigo_refresh_token', refreshToken);
+    setStorageItem('sigo_access_token', accessToken);
+    setStorageItem('sigo_refresh_token', refreshToken);
     set({
       user,
       accessToken,
@@ -35,8 +62,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem('sigo_access_token');
-    localStorage.removeItem('sigo_refresh_token');
+    removeStorageItem('sigo_access_token');
+    removeStorageItem('sigo_refresh_token');
     set({
       user: null,
       accessToken: null,

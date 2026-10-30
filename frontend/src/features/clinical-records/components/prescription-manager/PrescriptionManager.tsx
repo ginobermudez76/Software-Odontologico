@@ -335,3 +335,4 @@ export const PrescriptionManager: React.FC<PrescriptionManagerProps> = ({
     </div>
   );
 };
+

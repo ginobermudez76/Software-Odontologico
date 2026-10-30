@@ -4,3 +4,4 @@ export interface SignaturePadProps {
   title?: string;
   onSignatureChange?: (dataUrl: string | null) => void;
 }
+

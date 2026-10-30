@@ -15,6 +15,7 @@ import {
   ConsentManager,
   PrescriptionManager,
 } from './features/clinical-records';
+import { InventoryView } from './features/inventory';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,6 +60,7 @@ export const App: React.FC = () => {
             <Route path="soep-notes" element={<SoepEditor />} />
             <Route path="consents" element={<ConsentManager />} />
             <Route path="prescriptions" element={<PrescriptionManager />} />
+            <Route path="inventory" element={<InventoryView />} />
             {/* Rutas dinámicas secundarias */}
             <Route
               path="*"

@@ -89,3 +89,4 @@ describe('ConsentManager Component', () => {
     expect(screen.queryByText('Firmar en Pantalla')).toBeNull();
   });
 });
+

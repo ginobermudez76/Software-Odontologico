@@ -12,6 +12,7 @@ coverage/
 dist/
 build/
 .turbo/
+.vite/
 
 # Variables de entorno y secretos
 .env

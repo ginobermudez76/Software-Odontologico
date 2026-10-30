@@ -57,3 +57,4 @@ export class CreatePrescriptionDto {
   @IsBoolean()
   bypassAllergyWarning?: boolean;
 }
+

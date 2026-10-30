@@ -314,6 +314,7 @@ model Appointment {
   doctor  User        @relation("DoctorAppointments", fields: [doctorId], references: [id])
   chair   DentalChair @relation(fields: [chairId], references: [id])
   invoices Invoice[]
+  discharges InventoryDischarge[]
 
   @@map("appointments")
 }
@@ -404,4 +405,100 @@ model AuditLog {
 
   @@map("audit_logs")
 }
+
+// ==========================================
+// 6. SUBDOMINIO: INVENTARIO, LOTES Y RECETAS
+// ==========================================
+
+model ProcedureCatalog {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                String   @db.VarChar(50)
+  name                String   @db.VarChar(150)
+  category            String   @db.VarChar(50) // Operatoria, Cirugía, Endodoncia, Periodoncia, Ortodoncia, Rehabilitación
+  basePrice           Decimal  @map("base_price") @db.Decimal(10, 2)
+  suggestedLabCost    Decimal  @default(0) @map("suggested_lab_cost") @db.Decimal(10, 2)
+  durationMinutes     Int      @default(30) @map("duration_minutes")
+  isActive            Boolean  @default(true) @map("is_active")
+  isDeleted           Boolean  @default(false) @map("is_deleted")
+  deletedAt           DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  recipes             ProcedureRecipe[]
+  discharges          InventoryDischarge[]
+
+  @@map("procedure_catalog")
+}
+
+model ClinicalSupply {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sku          String   @db.VarChar(50)
+  name         String   @db.VarChar(150)
+  brand        String?  @db.VarChar(100)
+  unit         String   @db.VarChar(50) // Cartucho, Gramo, Unidad, Par, Frasco, Caja
+  minStock     Int      @default(10) @map("min_stock")
+  currentStock Int      @default(0) @map("current_stock")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  batches      SupplyBatch[]
+  recipes      ProcedureRecipe[]
+  discharges   InventoryDischarge[]
+
+  @@map("clinical_supplies")
+}
+
+model SupplyBatch {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supplyId          String   @map("supply_id") @db.Uuid
+  batchNumber       String   @map("batch_number") @db.VarChar(50)
+  expirationDate    DateTime @map("expiration_date") @db.Timestamptz
+  initialQuantity   Int      @map("initial_quantity")
+  availableQuantity Int      @map("available_quantity")
+  unitCost          Decimal  @map("unit_cost") @db.Decimal(10, 2)
+  isDeleted         Boolean  @default(false) @map("is_deleted")
+  deletedAt         DateTime? @map("deleted_at") @db.Timestamptz
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  supply            ClinicalSupply       @relation(fields: [supplyId], references: [id])
+  discharges        InventoryDischarge[]
+
+  @@map("supply_batches")
+}
+
+model ProcedureRecipe {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  procedureId  String   @map("procedure_id") @db.Uuid
+  supplyId     String   @map("supply_id") @db.Uuid
+  quantity     Decimal  @db.Decimal(10, 2)
+
+  procedure    ProcedureCatalog @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+  supply       ClinicalSupply   @relation(fields: [supplyId], references: [id], onDelete: Cascade)
+
+  @@unique([procedureId, supplyId])
+  @@map("procedure_recipes")
+}
+
+model InventoryDischarge {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  appointmentId  String?  @map("appointment_id") @db.Uuid
+  chairId        String?  @map("chair_id") @db.Uuid
+  procedureId    String?  @map("procedure_id") @db.Uuid
+  supplyId       String   @map("supply_id") @db.Uuid
+  batchId        String?  @map("batch_id") @db.Uuid
+  quantity       Decimal  @db.Decimal(10, 2)
+  reason         String   @db.VarChar(150)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  appointment    Appointment?      @relation(fields: [appointmentId], references: [id])
+  procedure      ProcedureCatalog? @relation(fields: [procedureId], references: [id])
+  supply         ClinicalSupply    @relation(fields: [supplyId], references: [id])
+  batch          SupplyBatch?      @relation(fields: [batchId], references: [id])
+
+  @@map("inventory_discharges")
+}
+
 

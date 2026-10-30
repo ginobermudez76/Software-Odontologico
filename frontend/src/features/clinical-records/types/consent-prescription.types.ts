@@ -75,3 +75,4 @@ export const CONSENT_TEMPLATES: Record<string, { procedureName: string; risksDes
       'Riesgos asociados: sensibilidad dental transitoria al frío y calor, recesión gingival terapéutica, movilidad dental temporal y necesidad de controles periodontales de mantenimiento periódicos.',
   },
 };
+

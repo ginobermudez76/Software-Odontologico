@@ -287,3 +287,4 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
     </div>
   );
 };
+

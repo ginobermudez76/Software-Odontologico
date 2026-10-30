@@ -17,3 +17,4 @@ export class PublicPrescriptionsController {
     return this.clinicalRecordsService.verifyPublicPrescription(qrCode);
   }
 }
+

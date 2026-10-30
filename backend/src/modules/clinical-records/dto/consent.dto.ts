@@ -54,3 +54,4 @@ export class SignConsentDto {
   @IsString()
   signerIp?: string;
 }
+

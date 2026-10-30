@@ -12,3 +12,4 @@ export interface AllergyConflictModalState {
   isOpen: boolean;
   warningDetail: string;
 }
+

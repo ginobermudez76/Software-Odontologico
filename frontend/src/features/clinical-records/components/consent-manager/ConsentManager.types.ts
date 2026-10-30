@@ -20,3 +20,4 @@ export interface SigningModalState {
   signatureData: string | null;
   otpCode?: string;
 }
+

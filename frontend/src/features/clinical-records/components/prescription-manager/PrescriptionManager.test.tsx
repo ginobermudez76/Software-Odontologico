@@ -84,3 +84,4 @@ describe('PrescriptionManager Component', () => {
     expect(screen.queryByText('Emitir Nueva Receta')).toBeNull();
   });
 });
+
